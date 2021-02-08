@@ -7,9 +7,10 @@ class Player extends React.Component{
                 position: "absolute",
                 width: "fit-content",
                 margin: 0,
-                transform: `translateX(550px) translateY(840px)`,
+                // transform: `translateX(550px) translateY(840px)`,
+                transform: `translateY(${this.props.playerInfo.playerTargetY}px) translateX(${this.props.playerInfo.playerTargetX}px)` ,
                 }}>
-                    Character
+                    Player
                 </div>
         )
     }
