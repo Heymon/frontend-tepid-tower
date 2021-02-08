@@ -1,0 +1,6 @@
+
+
+.landing{
+    display: grid;
+    grid-template-columns: 1fr 320px 1fr;
+}
