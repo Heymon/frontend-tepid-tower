@@ -1,4 +1,5 @@
 .game{
     height: 100vh;
     background-color: aqua;
+    overflow: auto;/* auto for testing change to hidden  */
 }

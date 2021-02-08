@@ -2,7 +2,8 @@ import React from "react";
 
 import './Game.css'
 
-import Player from '../Player/Player'
+import Player from '../Player/Player';
+import PlatformContainer from '../Platform/PlatformContainer';
 
 class Game extends React.Component {
 
@@ -113,7 +114,9 @@ class Game extends React.Component {
         return(
             <>
             <Player playerInfo={this.state}/>
-            <section className='game'>Game</section>
+            <section className='game'>
+                <PlatformContainer />
+            </section>
             </> 
         )
     }
