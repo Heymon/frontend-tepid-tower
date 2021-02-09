@@ -2,8 +2,9 @@ import React from "react";
 
 import './Game.css'
 
-import Player from '../Player/Player';
-import PlatformContainer from '../Platform/PlatformContainer';
+import Player from "../Player/Player";
+import PlatformContainer from "../Platform/PlatformContainer";
+import DeathZone from "../DeathZone/DeathZone";
 
 class Game extends React.Component {
 
@@ -27,6 +28,7 @@ class Game extends React.Component {
         scrollingSpeed: 5,
         scrollingAdjustment: 5,
 
+        points:0,
 
         // testing
         movementToggle: false,
@@ -47,6 +49,14 @@ class Game extends React.Component {
     }
 
     componentDidUpdate (prevState) {
+        
+        if (this.state.isScrolling) {
+            const playerCurPos = this.getPlayerCurPos();
+            if (playerCurPos.y + playerCurPos.height >= window.innerHeight + 25) {
+                return this.gameOver()
+            }
+
+        }
 
         // console.log("update");
 
@@ -68,10 +78,10 @@ class Game extends React.Component {
                 playerCurPos.x + playerCurPos.width > platformPos.left && 
                 playerCurPos.x + playerCurPos.width < platformPos.right
                 )) {
-                console.log("should not fall");
+                // console.log("should not fall");
             } else {//if they are not on top make them fall and check possible landings 
                 if(!this.state.playerFalling && !this.state.playerJumping && this.state.playerLanded) {
-                    console.log("should fall")
+                    // console.log("should fall")
                     this.setState({playerFalling: true, playerLanded: false})
                     // this.checkAllPlatforms();
                     this.land(this.checkAllPlatforms());
@@ -127,16 +137,16 @@ class Game extends React.Component {
     land = (curPlatform) => {
         const playerEl = document.getElementById('player');
                 playerEl.addEventListener('transitionend', () => {
-                    // console.log("touchedfloorDown");
+                    console.log("touchedfloorDown");
                     //when it reach the ground turns playerJumping to false
-                    const playerCurPos = this.getPlayerCurPos();
-                    if (this.state.curPlatform !== null) {
+                    // const playerCurPos = this.getPlayerCurPos();
+                    // if (this.state.curPlatform !== null) {
                         
-                        if (playerCurPos.y + playerCurPos.height >= window.innerHeight) {
-                            return this.gameOver()
-                        }
+                    //     if (playerCurPos.y + playerCurPos.height >= window.innerHeight) {
+                    //         return this.gameOver()
+                    //     }
     
-                    }
+                    // }
                     if (curPlatform) {
                         console.log("did land1")
                         this.setState({playerJumping: false, playerFalling: false, playerLanded: true, curPlatform, speed: 1.5});
@@ -145,7 +155,8 @@ class Game extends React.Component {
                         }
                     }else {
                         console.log("did land2")
-                        this.setState({playerJumping: false, playerFalling: false, playerLanded: true, speed: 1.5});
+                        this.setState({playerJumping: false, playerFalling: false, playerLanded: true, curPlatform: null, speed: 1.5});
+                        console.log(this.state.playerFalling);
                     }
                    
                 }, {once: true});
@@ -181,7 +192,7 @@ class Game extends React.Component {
                     this.setState({playerTargetX: playerCurPos.x, playerTargetY: landPos, speed: (0.2), playerFalling: true, playerJumping: false});
                     return platformEl
                 }//if not just land normally
-                this.setState({playerTargetY: landPos, curPlatform: platformEl, playerFalling: true, playerJumping: false})
+                this.setState({playerTargetY: landPos, curPlatform: platformEl, speed: 1.0, playerFalling: true, playerJumping: false})
                 return platformEl
             }
             return false //if the player is not landing on platform return false
@@ -206,7 +217,7 @@ class Game extends React.Component {
             const towerBottom = window.innerHeight - playerCurPos.width;
             const distance = towerBottom - playerCurPos.y;
             if (distance < 100) {// if the distance between the player and where he is landing is small increase the veloctiy of landing
-                // console.log("faster" + distance);
+                console.log("faster" + distance);
                 // this.setState({playerTargetY: towerBottom, speed: ((distance/100)+0.1), playerFalling: true, playerJumping: false});
                 this.setState({playerTargetY: towerBottom, speed: (0.1), playerFalling: true, playerJumping: false});
                 // this.setState({playerTargetY: towerBottom, speed: (distance < 30 ? 0.5 : 0.75 ), curPlatform: null, playerFalling: true, playerJumping: false});
@@ -227,32 +238,35 @@ class Game extends React.Component {
         const scroll = document.querySelector(".game");
   
         // console.log("test1");
-        const levelScrolling = setInterval(() => {
-            if(scroll.scrollTop === 0) {
-                // console.log("test2");
-                clearInterval(this.state.scrollingFunc);
-                this.setState({movementToggle: false});
-                return
-            }
-            scroll.scrollTop -=this.state.scrollingSpeed
-            if (this.state.playerJumping) {
-                
-            } else if (this.state.playerFalling) {
-                const playerCurPos = this.getPlayerCurPos();
-                const distance = (this.state.playerTargetY + this.state.scrollingAdjustment) - playerCurPos.y;
-                if (distance < 10) {
-                    // console.log("faster" + distance);
-                    this.setState({playerTargetY: this.state.playerTargetY + this.state.scrollingAdjustment, speed: 0.1, playerTargetX: playerCurPos.x })
+        if(!this.state.isScrolling) {
+
+            const levelScrolling = setInterval(() => {
+                if(scroll.scrollTop === 0) {
+                    // console.log("test2");
+                    clearInterval(this.state.scrollingFunc);
+                    this.setState({movementToggle: false});
                     return
                 }
-                this.setState({playerTargetY: this.state.playerTargetY + this.state.scrollingAdjustment})
-            } else {
-                const playerCurPos = this.getPlayerCurPos();
-                this.setState({playerTargetY: this.state.playerTargetY + this.state.scrollingAdjustment, speed: 0, playerTargetX: playerCurPos.x })
-            }
-            
-        }, 100);
-        this.setState({isScrolling: true, scrollingFunc: levelScrolling}); 
+                scroll.scrollTop -=this.state.scrollingSpeed
+                if (this.state.playerJumping) {
+                    
+                } else if (this.state.playerFalling) {
+                    const playerCurPos = this.getPlayerCurPos();
+                    const distance = (this.state.playerTargetY + this.state.scrollingAdjustment) - playerCurPos.y;
+                    if (distance < 10) {
+                        // console.log("faster" + distance);
+                        this.setState({playerTargetY: this.state.playerTargetY + this.state.scrollingAdjustment, speed: 0.1, playerTargetX: playerCurPos.x })
+                        return
+                    }
+                    this.setState({playerTargetY: this.state.playerTargetY + this.state.scrollingAdjustment})
+                } else {
+                    const playerCurPos = this.getPlayerCurPos();
+                    this.setState({playerTargetY: this.state.playerTargetY + this.state.scrollingAdjustment, speed: 0, playerTargetX: playerCurPos.x })
+                }
+                
+            }, 100);
+            this.setState({isScrolling: true, scrollingFunc: levelScrolling}); 
+        }
          
         console.log("scrolling");
     }
@@ -260,7 +274,9 @@ class Game extends React.Component {
     gameOver = () => {
         const playerEl = document.getElementById('player');
         playerEl.style.color="blue";
-        clearInterval(this.state.movementFunc)
+        clearInterval(this.state.scrollingFunc);
+        playerEl.style.display="none";
+        this.setState({points: (this.state.curPlatform.getAttribute("id")*1000)})
 
     }
 
@@ -404,6 +420,7 @@ class Game extends React.Component {
             <>
             <Player playerInfo={this.state}/>
             <section className='game'>
+                <DeathZone display={this.state.isScrolling}/>
                 <PlatformContainer curPlatform={(this.state.curPlatform ? this.state.curPlatform.getAttribute("id") : 0)}/>
             </section>
             </> 
