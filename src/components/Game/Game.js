@@ -23,6 +23,12 @@ class Game extends React.Component {
         curPlatform: null,
 
         isScrolling: false,
+        scrollingFunc: 0,
+        scrollingSpeed: 5,
+        scrollingAdjustment: 5,
+
+
+        // testing
         movementToggle: false,
         movementFunc: 0
 
@@ -65,7 +71,7 @@ class Game extends React.Component {
                 console.log("should not fall");
             } else {//if they are not on top make them fall and check possible landings 
                 if(!this.state.playerFalling && !this.state.playerJumping && this.state.playerLanded) {
-                    console.log("wtf")
+                    console.log("should fall")
                     this.setState({playerFalling: true, playerLanded: false})
                     // this.checkAllPlatforms();
                     this.land(this.checkAllPlatforms());
@@ -221,32 +227,32 @@ class Game extends React.Component {
         const scroll = document.querySelector(".game");
   
         // console.log("test1");
-        const levelMovement = setInterval(() => {
+        const levelScrolling = setInterval(() => {
             if(scroll.scrollTop === 0) {
                 // console.log("test2");
-                clearInterval(this.state.movementFunc);
+                clearInterval(this.state.scrollingFunc);
                 this.setState({movementToggle: false});
                 return
             }
-            scroll.scrollTop -=0.1
+            scroll.scrollTop -=this.state.scrollingSpeed
             if (this.state.playerJumping) {
                 
             } else if (this.state.playerFalling) {
                 const playerCurPos = this.getPlayerCurPos();
-                const distance = (this.state.playerTargetY + 1) - playerCurPos.y;
+                const distance = (this.state.playerTargetY + this.state.scrollingAdjustment) - playerCurPos.y;
                 if (distance < 10) {
                     // console.log("faster" + distance);
-                    this.setState({playerTargetY: this.state.playerTargetY + 1, speed: 0.2, playerTargetX: playerCurPos.x })
+                    this.setState({playerTargetY: this.state.playerTargetY + this.state.scrollingAdjustment, speed: 0.1, playerTargetX: playerCurPos.x })
                     return
                 }
-                this.setState({playerTargetY: this.state.playerTargetY + 1})
+                this.setState({playerTargetY: this.state.playerTargetY + this.state.scrollingAdjustment})
             } else {
                 const playerCurPos = this.getPlayerCurPos();
-                this.setState({playerTargetY: this.state.playerTargetY + 1, speed: 0, playerTargetX: playerCurPos.x })
+                this.setState({playerTargetY: this.state.playerTargetY + this.state.scrollingAdjustment, speed: 0, playerTargetX: playerCurPos.x })
             }
             
-        }, 200);
-        this.setState({isScrolling: true, movementFunc: levelMovement}); 
+        }, 100);
+        this.setState({isScrolling: true, scrollingFunc: levelScrolling}); 
          
         console.log("scrolling");
     }
