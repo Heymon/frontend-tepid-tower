@@ -20,7 +20,7 @@ class PlatformContainer extends React.Component {
     let idGenerator = 0;
     for (let index = 0; index < this.state.numOfPlatforms; index++) {
         idGenerator++;
-        prePlatforms.unshift(<Platform yAxis={37} color={"red"} key={idGenerator} idKey={"p" + idGenerator}/>)
+        prePlatforms.unshift(<Platform xAxis={this.getRandomPos(81)} color={"red"} key={idGenerator} idKey={"p" + idGenerator}/>)
         
     }
     console.log(prePlatforms);
@@ -28,6 +28,13 @@ class PlatformContainer extends React.Component {
     return this.state.platforms
 
 
+    }
+
+    getRandomPos = (max) => {
+        console.log("radom");
+        const randomNum = Math.floor(Math.random() * (max+1))
+        console.log(randomNum);
+        return Math.floor(Math.random() * (max+1))
     }
 
 

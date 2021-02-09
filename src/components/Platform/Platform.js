@@ -13,7 +13,7 @@ class Platform extends React.Component {
     render() {
 
         return(
-            <div className="platform" style={{margin: `96px 0 56px ${this.props.yAxis}%`, width: "60px", height: "10px", backgroundColor: `${this.props.color}`}}>
+            <div className="platform" style={{margin: `96px 0 56px ${this.props.xAxis}%`, width: "60px", height: "10px", backgroundColor: `${this.props.color}`}}>
                 {this.state.platformId}
             </div>
         )
