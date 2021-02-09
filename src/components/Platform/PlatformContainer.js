@@ -10,31 +10,37 @@ class PlatformContainer extends React.Component {
         numOfPlatforms: 10
     }
 
-    componentDidMount() {
-      this.generatePlatforms();
+    componentDidMount(props) {
+        this.setGameAtBegining();
+        this.generatePlatforms();
     }
 
     generatePlatforms = () => {
 
-    const prePlatforms = [];
-    let idGenerator = 0;
-    for (let index = 0; index < this.state.numOfPlatforms; index++) {
-        idGenerator++;
-        prePlatforms.unshift(<Platform xAxis={this.getRandomPos(81)} color={"red"} key={idGenerator} idKey={"p" + idGenerator}/>)
-        
-    }
-    console.log(prePlatforms);
-    this.setState({platforms: prePlatforms, currentPlatformId: idGenerator})
-    return this.state.platforms
-
+        const prePlatforms = [];
+        let idGenerator = this.state.currentPlatformId;
+        for (let index = 0; index < this.state.numOfPlatforms; index++) {
+            idGenerator++;
+            prePlatforms.unshift(<Platform xAxis={this.getRandomPos(81)} color={"red"} key={idGenerator} idKey={idGenerator}/>);
+            
+        }
+        console.log(prePlatforms);
+        this.setState({platforms: prePlatforms, currentPlatformId: idGenerator});
+        return this.state.platforms
 
     }
 
     getRandomPos = (max) => {
-        console.log("radom");
-        const randomNum = Math.floor(Math.random() * (max+1))
-        console.log(randomNum);
+        // const randomNum = Math.floor(Math.random() * (max+1));
         return Math.floor(Math.random() * (max+1))
+    }
+
+    setGameAtBegining = () =>{
+        document.addEventListener('DOMContentLoaded', () => {
+            // console.log("vaiiii")
+            const levelWindow = document.querySelector(".game")
+            levelWindow.scrollTo(0, levelWindow.scrollHeight);     
+        });
     }
 
 
