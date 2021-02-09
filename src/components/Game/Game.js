@@ -56,8 +56,8 @@ class Game extends React.Component {
                 // console.log("should fall");
                 if(!this.state.playerFalling && !this.state.playerJumping) {
                     this.setState({playerFalling: true, playerLanded: false})
-                    this.checkAllPlatforms();
-                    this.land()
+                    // this.checkAllPlatforms();
+                    this.land(this.checkAllPlatforms());
                 }
             }
         }
@@ -98,22 +98,35 @@ class Game extends React.Component {
 
             // starts a timeout with the duration being multiplied by the gauge set on keydown
             setTimeout(() => {
-                this.checkAllPlatforms()//check all platform to define where player should land including the bottom
+                // this.checkAllPlatforms()//check all platform to define where player should land including the bottom
                 
-                this.land();//sets event Listener to confirm the landing
+                this.land(this.checkAllPlatforms());//sets event Listener to confirm the landing
             }, 48 * this.state.jumpGauge)
 
         }
     }
 
     //sets event Listener to confirm the landing
-    land = () => {
+    land = (curPlatform) => {
         const playerEl = document.getElementById('player');
                 playerEl.addEventListener('transitionend', () => {
                     // console.log("touchedfloorDown");
                     //when it reach the ground turns playerJumping to false
-                    
-                    this.setState({playerJumping: false, playerFalling: false, playerLanded: true, speed: 1.5});
+                    const playerCurPos = this.getPlayerCurPos();
+                    if (this.state.curPlatform !== null) {
+                        
+                        if (playerCurPos.y + playerCurPos.height >= window.innerHeight) {
+                            this.gameOver()
+                        }
+                        
+                    }
+                    // console.log(curPlatform)
+                    if (curPlatform) {
+
+                        this.setState({playerJumping: false, playerFalling: false, playerLanded: true, curPlatform, speed: 1.5});
+                    }else {
+                        this.setState({playerJumping: false, playerFalling: false, playerLanded: true, speed: 1.5});
+                    }
                     
                 }, {once: true});
     }
@@ -144,11 +157,11 @@ class Game extends React.Component {
                 if (distance < 100) {// if the distance between the player and where he is landing is small increase the veloctiy of landing
                     console.log("faster" + distance)
                     // this.setState({playerTargetY: landPos, speed: (distance < 30 ? 0.5 : 0.75 ), curPlatform: platformEl, playerFalling: true, playerJumping: false});
-                    this.setState({playerTargetY: landPos, speed: (Math.floor(distance/100)+0.1), curPlatform: platformEl, playerFalling: true, playerJumping: false});
-                    return true
+                    this.setState({playerTargetX: playerCurPos.x, playerTargetY: landPos, speed: (Math.floor(distance/100)+0.1), playerFalling: true, playerJumping: false});
+                    return platformEl
                 }//if not just land normally
                 this.setState({playerTargetY: landPos, curPlatform: platformEl, playerFalling: true, playerJumping: false})
-                return true
+                return platformEl
             }
             return false //if the player is not landing on platform return false
         }
@@ -156,30 +169,40 @@ class Game extends React.Component {
     }
 
     checkAllPlatforms = () => {
+        let platform = null;
         const platformEls = document.querySelectorAll('.platform');
         let isLandingOnPlatform = false;
         for (let i = 0; i < platformEls.length; i++) {//for all the platforms
-            if (this.checkLanding(platformEls[i])) {//check if the player should land on them and if so make it the target
+            platform = this.checkLanding(platformEls[i]);//if it finds a platform it returns the html element of the platform
+            if (platform) {//check if the player should land on them and if so make it the target
                 // console.log("chekc platforms");
-                    isLandingOnPlatform = true;
-                    break
-                }
+                isLandingOnPlatform = true;
+                break
             }
-            if (!isLandingOnPlatform) {//if it didnt found a platform set landing to ground
-                const playerCurPos = this.getPlayerCurPos();
-                const towerBottom = window.innerHeight - playerCurPos.width;
-                const distance = towerBottom - playerCurPos.y;
-                if (distance < 100) {// if the distance between the player and where he is landing is small increase the veloctiy of landing
-                    console.log("faster" + distance)
-                    this.setState({playerTargetY: towerBottom, speed: (Math.floor(distance/100)+0.1), curPlatform: null, playerFalling: true, playerJumping: false});
-                    // this.setState({playerTargetY: towerBottom, speed: (distance < 30 ? 0.5 : 0.75 ), curPlatform: null, playerFalling: true, playerJumping: false});
-                    // console.log(this.state); 
-                    return true
-                } else {//if not just land normally
-                    console.log("slower" + distance)
-                    this.setState({playerTargetY: towerBottom, speed: 1.5, curPlatform: null, playerFalling: true, playerJumping: false});
-                } 
-            }
+        }
+        if (!isLandingOnPlatform) {//if it didnt found a platform set landing to ground
+            const playerCurPos = this.getPlayerCurPos();
+            const towerBottom = window.innerHeight - playerCurPos.width;
+            const distance = towerBottom - playerCurPos.y;
+            if (distance < 100) {// if the distance between the player and where he is landing is small increase the veloctiy of landing
+                console.log("faster" + distance)
+                this.setState({playerTargetY: towerBottom, speed: (Math.floor(distance/100)+0.1), playerFalling: true, playerJumping: false});
+                // this.setState({playerTargetY: towerBottom, speed: (distance < 30 ? 0.5 : 0.75 ), curPlatform: null, playerFalling: true, playerJumping: false});
+                // console.log(this.state); 
+                return false 
+            } else {//if not just land normally
+                console.log("slower" + distance)
+                this.setState({playerTargetY: towerBottom, speed: 1.5, playerFalling: true, playerJumping: false});
+                return false
+            } 
+        }
+        return platform
+
+    }
+
+    gameOver = () => {
+        const playerEl = document.getElementById('player');
+        playerEl.style.color="blue";
 
     }
 
@@ -210,6 +233,7 @@ class Game extends React.Component {
                     // this is not working to well //couldnt figure out why; solution if they touch wall they die
                     if( curPos.x + curPos.width >= rightBorder){//if the player reachs the border 
                         console.log("should stop")
+                        this.gameOver();
                         console.log("touch wall die") //start some event here to say game over
                         this.stopMovement({x: rightBorder - curPos.width, y: this.state.playerTargetY}, 0);//stop them there and raise the flag on the rightborder
                         
@@ -223,6 +247,7 @@ class Game extends React.Component {
                     const curPos = this.getPlayerCurPos();
                     if (curPos.x <= leftBorder) {
                         console.log("should stop")
+                        this.gameOver();
                         console.log("touch wall die")// start some event here to say gameover
                         this.stopMovement({x: leftBorder, y: this.state.playerTargetY}, 0);//stop them there and raise the flag on the leftborder
                         
@@ -245,6 +270,7 @@ class Game extends React.Component {
                 const curPos = this.getPlayerCurPos();
                 if( curPos.x + curPos.width >= rightBorder){
                     console.log("game over")// game over here too just in case
+                    this.gameOver();
                     this.stopMovement({x: rightBorder - curPos.width, y: this.state.playerTargetY}, 0);
 
                 } else {
@@ -260,6 +286,7 @@ class Game extends React.Component {
                 const curPos = this.getPlayerCurPos();
                 if (curPos.x <= leftBorder) {
                     console.log("game over") //game over here just in case
+                    this.gameOver();
                     return this.stopMovement({x: leftBorder, y: this.state.playerTargetY}, 0);
                 }else {
                     this.stopMovement(this.getPlayerCurPos());
