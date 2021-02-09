@@ -2,19 +2,16 @@ import React from 'react';
 import './Landing.css'
 
 import Game from '../components/Game/Game'
-import Player from '../components/Player/Player'
+import LeftSection from '../components/LeftSection/LeftSection'
+import RightSection from '../components/RightSection/RightSection'
 
 
 function Landing() {
     return (
         <div className="landing">
-            <section>
-                <h1>Title Rght</h1>
-            </section>
+            <LeftSection />
             <Game />
-            <section>
-                <h1>Options Left</h1>
-            </section>
+            <RightSection />
         </div>
     )
     

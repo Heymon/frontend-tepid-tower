@@ -1,0 +1,33 @@
+.section--right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    /* justify-content: flex-end; */
+}
+
+aside {
+    /* margin-right: 40px; */
+}
+.aside--top {
+    width: 100%;
+    height: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.aside--top>* {
+    margin: 26px 50px;  
+}
+
+.aside--bottom {
+    width: 100%;
+    height: 50%;
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-end;
+}
+
+.aside--bottom>* {
+    margin: 26px 50px;
+}
