@@ -15,6 +15,16 @@ class PlatformContainer extends React.Component {
         this.generatePlatforms();
     }
 
+    componentDidUpdate(props) {
+        // console.log("when");
+        const gameWindow = document.querySelector(".game")
+        // console.log(gameWindow.scrollTop && props.curPlatform > 2);
+        if (gameWindow.scrollTop <= 100 && props.curPlatform > 2) {
+            console.log(props);
+            this.addPlatform(gameWindow);
+        }
+    }
+
     generatePlatforms = () => {
 
         const prePlatforms = [];
@@ -35,12 +45,38 @@ class PlatformContainer extends React.Component {
         return Math.floor(Math.random() * (max+1))
     }
 
+    addPlatform = (gameWindow) => {
+        const prePlatforms = this.state.platforms;
+        let idGenerator = this.state.currentPlatformId;
+        idGenerator++;
+        const newPlatform = <Platform xAxis={this.getRandomPos(81)} color={"blue"} key={idGenerator} idKey={idGenerator}/>
+        console.log("added platform");
+        
+        prePlatforms.pop();
+        prePlatforms.unshift(newPlatform);
+
+        // const previousScrollTop = gameWindow.scrollTop;
+        this.setState({platforms: prePlatforms, currentPlatformId: idGenerator});
+        console.log(gameWindow.scrollTop);
+        // console.log(gameWindow.scrollTop = previousScrollTop + 106);
+        // console.log("does it reach here")
+    }
+
     setGameAtBegining = () =>{
         document.addEventListener('DOMContentLoaded', () => {
-            // console.log("vaiiii")
+            console.log("set twice?")
             const levelWindow = document.querySelector(".game")
             levelWindow.scrollTo(0, levelWindow.scrollHeight);     
         });
+
+        document.addEventListener('click', () => {
+            console.log("deu")  
+            const levelWindow = document.querySelector(".game")
+            this.addPlatform(levelWindow);
+
+                    
+          });
+  
     }
 
 
