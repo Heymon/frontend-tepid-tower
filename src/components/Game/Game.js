@@ -155,6 +155,10 @@ class Game extends React.Component {
                         }
                     }else {
                         console.log("did land2")
+                        if (this.state.curPlatform.getAttribute("id") > 2 && this.state.isScrolling) {
+                            this.gameOver();
+                            this.setState({playerJumping: false, playerFalling: false, playerLanded: true, speed: 1.5});
+                        }
                         this.setState({playerJumping: false, playerFalling: false, playerLanded: true, curPlatform: null, speed: 1.5});
                         console.log(this.state.playerFalling);
                     }
