@@ -10,7 +10,6 @@ export const gameState = atom({
     default: false,
 });
 
-
 export const userPoints = atom({
     key: "userPoints",
     default: 0,

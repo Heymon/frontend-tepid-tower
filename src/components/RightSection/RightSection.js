@@ -36,38 +36,17 @@ class RightSection extends React.Component {
 
         if (!this.props.gameStatus) {
             console.log("gameover");
+            this.userModal("gameover--modal")
             console.log(this.props.points)
         }
     }
 
-    userModal = () => {
+    userModal = (class_name) => {
 
-        if(this.state.curUser === null) {
+        const popUps = document.querySelectorAll(".modal");
+        console.log(popUps);
 
-            const popUp = document.querySelector(".user--modal");
-
-            if (popUp.style.display === "flex") {
-                
-                popUp.style.display = "none";
-                const error = document.querySelector(".error--message");
-                if(error) error.remove();
-                return
-            }
-            
-            return popUp.style.display = "flex";
-        } else {
-            const formPopUp = document.querySelector(".user--modal");
-            if (formPopUp.style.display === "flex") formPopUp.style.display = "none";
-
-            const userPopUp = document.querySelector(".user--modal--logged");
-            if (userPopUp.style.display === "flex") {
-                
-                userPopUp.style.display = "none";
-                const error = document.querySelector(".error--message");
-                if(error) error.remove();
-                return
-            }
-
+        if (class_name === "user--modal--logged") {
             AuthModel.show().then(json => {
                 console.log(json);
                 if (json.field) {
@@ -75,11 +54,77 @@ class RightSection extends React.Component {
                     return form.appendChild(this.createErrorMessage(json.message));
                 }
                 this.setState({curUser: json.curUser });
-            })
-            
-            return userPopUp.style.display = "flex";
-
+            });
         }
+
+
+
+        for (let i = 0; i < popUps.length; i++) {
+            if (popUps[i].classList.contains(class_name)) {
+                console.log("true");
+                console.log(popUps[i].style.display)
+                if (popUps[i].style.display === "flex") {
+                    
+                    popUps[i].style.display = "none";
+                    const error = document.querySelector(".error--message");
+                    if(error) error.remove();
+                    // break
+                } else {
+
+                    popUps[i].style.display = "flex";
+                }
+                // break
+            } else {
+                // if (popUps[i].style.display === "flex") {
+                    
+                //     popUps[i].style.display = "none";
+                //     break
+                // }
+                popUps[i].style.display = "none";
+                const error = document.querySelector(".error--message");
+                if(error) error.remove();
+            }
+           
+        }
+
+        // if(this.state.curUser === null) {
+
+        //     const popUp = document.querySelector(".user--modal");
+
+        //     if (popUp.style.display === "flex") {
+                
+        //         popUp.style.display = "none";
+        //         const error = document.querySelector(".error--message");
+        //         if(error) error.remove();
+        //         return
+        //     }
+            
+        //     return popUp.style.display = "flex";
+        // } else {
+        //     const formPopUp = document.querySelector(".user--modal");
+        //     if (formPopUp.style.display === "flex") formPopUp.style.display = "none";
+
+        //     const userPopUp = document.querySelector(".user--modal--logged");
+        //     if (userPopUp.style.display === "flex") {
+                
+        //         userPopUp.style.display = "none";
+        //         const error = document.querySelector(".error--message");
+        //         if(error) error.remove();
+        //         return
+        //     }
+
+        //     AuthModel.show().then(json => {
+        //         console.log(json);
+        //         if (json.field) {
+        //             const form = document.querySelector(".signup");
+        //             return form.appendChild(this.createErrorMessage(json.message));
+        //         }
+        //         this.setState({curUser: json.curUser });
+        //     });
+            
+        //     return userPopUp.style.display = "flex";
+
+        // }
 
     }
 
@@ -87,8 +132,16 @@ class RightSection extends React.Component {
         // event.preventDefault();
         //sends user info to be registered
         event.stopPropagation();
-        // console.log(event.target);
-        this.userModal();
+        if (this.state.curUser) {
+            
+            console.log(event.target);   
+            
+            this.userModal("user--modal--logged");
+        } else {
+            console.log(event.target);   
+            
+            this.userModal("user--modal");
+        }
     }
 
     createErrorMessage = (message) => {
@@ -133,7 +186,7 @@ class RightSection extends React.Component {
                     password: ""
                     })
                 localStorage.setItem("uid", json.signedJwt);
-                return this.userModal();
+                return this.userModal("user--modal--logged");
             })
         } else if(event.target.getAttribute("class")==="edit--user"){
             AuthModel.edit({username: this.state.username, country: this.state.country}).then(json => {
@@ -200,7 +253,7 @@ class RightSection extends React.Component {
                     </div>
                 </aside>
 
-                <div className="user--modal">
+                <div className="user--modal modal">
                     <form className="signup" onSubmit={this.handleSubmit}>
                         <div className="form--input">
                             <label>USERNAME</label>
@@ -277,7 +330,7 @@ class RightSection extends React.Component {
                     </form>
                 </div>
 
-                <div className="user--modal--logged">
+                <div className="user--modal--logged modal">
 
                     {(this.state.curUser ? <h2>{this.state.curUser.profile.highscore}</h2>: "" )}
                     <form className="edit--user" onSubmit={this.handleSubmit}>
@@ -327,6 +380,26 @@ class RightSection extends React.Component {
 
                     <div className="delete" onClick={this.handleSubmit}>DELETE BUTTON</div>
                     <div className="logout" onClick={this.handleSubmit}>LOG OUT BUTTON</div>
+                </div>
+
+                <div className="gameover--modal modal">
+
+                    {/* {(this.state.curUser ? <h2>{this.state.curUser.profile.highscore}</h2>: "" )} */}
+                    <div>
+                        <h2>THE TOWER HAS YOU NOW</h2>
+                        <div>
+                            <h3>SCORE: {this.state.points}</h3>
+                            <input type="submit" onSubmit="" value="PLAY AGAIN" />
+                        </div>
+                    </div>
+
+                    <div>
+                        <h2>SIGN UP TO ADD YOU SCORE!</h2>
+                        <div>
+                            <input type="submit" onSubmit="" value="SIGNUP/LOGIN" />
+                        </div>
+                    </div>
+
                 </div>
 
             </section>
