@@ -34,6 +34,20 @@ class AuthModel {
         }).then(response => response.json());
 
     };
+
+    static delete = data => {
+        return fetch(`${URL}/user/delete`, {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json",
+                authorization: `Bearer ${localStorage.uid}`,
+
+            },
+            body:JSON.stringify(data),
+        }).then(response => response.json());
+
+    };
+
 }
 
 export default AuthModel;
