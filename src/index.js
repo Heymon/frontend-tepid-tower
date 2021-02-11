@@ -1,5 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import {RecoilRoot} from "recoil"
+
 import './index.css';
 // import App from './App';
 import Landing from './pages/Landing'
@@ -7,7 +9,9 @@ import reportWebVitals from './reportWebVitals';
 
 ReactDOM.render(
   <React.StrictMode>
-    <Landing />
+    <RecoilRoot>
+      <Landing />
+    </RecoilRoot>
   </React.StrictMode>,
   document.getElementById('root')
 );
