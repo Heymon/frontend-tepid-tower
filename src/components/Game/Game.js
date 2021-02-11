@@ -6,9 +6,13 @@ import Player from "../Player/Player";
 import PlatformContainer from "../Platform/PlatformContainer";
 import DeathZone from "../DeathZone/DeathZone";
 
+import GetGameState from "../../recoil/components/GetGameState";
+
 class Game extends React.Component {
 
     state = {
+        gameStatus:true,
+
         playerTargetY: 0,
         playerTargetX: 0,
         // playerRotation: 0,
@@ -138,15 +142,6 @@ class Game extends React.Component {
         const playerEl = document.getElementById('player');
                 playerEl.addEventListener('transitionend', () => {
                     console.log("touchedfloorDown");
-                    //when it reach the ground turns playerJumping to false
-                    // const playerCurPos = this.getPlayerCurPos();
-                    // if (this.state.curPlatform !== null) {
-                        
-                    //     if (playerCurPos.y + playerCurPos.height >= window.innerHeight) {
-                    //         return this.gameOver()
-                    //     }
-    
-                    // }
                     if (curPlatform) {
                         console.log("did land1")
                         this.setState({playerJumping: false, playerFalling: false, playerLanded: true, curPlatform, speed: 1.5});
@@ -155,9 +150,12 @@ class Game extends React.Component {
                         }
                     }else {
                         console.log("did land2")
-                        if (this.state.curPlatform.getAttribute("id") > 2 && this.state.isScrolling) {
-                            this.gameOver();
-                            this.setState({playerJumping: false, playerFalling: false, playerLanded: true, speed: 1.5});
+                        if (this.state.curPlatform) {
+                            
+                            if (this.state.curPlatform.getAttribute("id") > 2 && this.state.isScrolling) {
+                                this.gameOver();
+                                this.setState({playerJumping: false, playerFalling: false, playerLanded: true, speed: 1.5});
+                            }
                         }
                         this.setState({playerJumping: false, playerFalling: false, playerLanded: true, curPlatform: null, speed: 1.5});
                         console.log(this.state.playerFalling);
@@ -257,7 +255,7 @@ class Game extends React.Component {
                 } else if (this.state.playerFalling) {
                     const playerCurPos = this.getPlayerCurPos();
                     const distance = (this.state.playerTargetY + this.state.scrollingAdjustment) - playerCurPos.y;
-                    if (distance < 10) {
+                    if (distance < 20) {//changed from 10 to 20; works better now
                         // console.log("faster" + distance);
                         this.setState({playerTargetY: this.state.playerTargetY + this.state.scrollingAdjustment, speed: 0.1, playerTargetX: playerCurPos.x })
                         return
@@ -280,7 +278,8 @@ class Game extends React.Component {
         playerEl.style.color="blue";
         clearInterval(this.state.scrollingFunc);
         playerEl.style.display="none";
-        this.setState({points: (this.state.curPlatform.getAttribute("id")*1000)})
+        console.log("gameOver");
+        this.setState({gameStatus: false, points: (this.state.curPlatform.getAttribute("id")*1000)})
 
     }
 
@@ -422,6 +421,7 @@ class Game extends React.Component {
     render(){
         return(
             <>
+            <GetGameState status={this.state.gameStatus} points={this.state.points}/>
             <Player playerInfo={this.state}/>
             <section className='game'>
                 <DeathZone display={this.state.isScrolling}/>
