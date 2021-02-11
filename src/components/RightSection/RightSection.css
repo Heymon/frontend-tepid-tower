@@ -31,3 +31,32 @@ aside {
 .aside--bottom>* {
     margin: 26px 50px;
 }
+
+.user--modal {
+    display: none;
+    position: absolute;
+
+    background-color: brown;
+    width: 37%;
+    height: 50%;
+    margin: 13% 31% 0 0;
+
+    align-items: flex-start;
+    justify-content: space-evenly;
+}
+
+.user--modal>.signup{
+
+    width: 50%;
+}
+
+.user--modal>.login{
+    width: 50%;
+}
+
+.form--input {
+    display: flex;
+    flex-direction: column;
+    margin: 22px 0px;
+    padding: 0 10px;
+}
