@@ -3,8 +3,6 @@ import './RightSection.css'
 
 import AuthModel from "../../models/auth";
 
-// import GetUserState from "../../recoil/components/GetUserState";
-
 
 class RightSection extends React.Component {
 
@@ -17,12 +15,37 @@ class RightSection extends React.Component {
         password: ""
     }
 
+    componentDidMount() {
+        
+    }
+
+    componentDidUpdate(prevProps) {
+        console.log("humm");
+        console.log(this.props.user);
+        console.log(prevProps.user);
+        if (this.props.user !== prevProps.user) {
+            console.log("humm");
+            this.setState({
+                curUser: this.props.user,
+                curUser: this.props.user, 
+                country: this.props.user.profile.country,
+                username: this.props.user.profile.username,
+                password: ""
+                })   
+        }
+
+        if (!this.props.gameStatus) {
+            console.log("gameover");
+            console.log(this.props.points)
+        }
+    }
+
     userModal = () => {
 
         if(this.state.curUser === null) {
 
             const popUp = document.querySelector(".user--modal");
-            // console.log(popUp.style.display);
+
             if (popUp.style.display === "flex") {
                 
                 popUp.style.display = "none";
@@ -44,6 +67,15 @@ class RightSection extends React.Component {
                 if(error) error.remove();
                 return
             }
+
+            AuthModel.show().then(json => {
+                console.log(json);
+                if (json.field) {
+                    const form = document.querySelector(".signup");
+                    return form.appendChild(this.createErrorMessage(json.message));
+                }
+                this.setState({curUser: json.curUser });
+            })
             
             return userPopUp.style.display = "flex";
 
@@ -157,7 +189,6 @@ class RightSection extends React.Component {
         return (
 
             <section className="section--right">
-                {/* <GetUserState user={this.state.curUser}/> */}
                 <aside className="aside--top">
                     <div>Settings</div>
                     <div>Trophies</div>
