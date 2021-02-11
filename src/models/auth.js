@@ -20,7 +20,20 @@ class AuthModel {
             body:JSON.stringify(data),
         }).then(response => response.json());
 
-    }
+    };
+
+    static edit = data => {
+        return fetch(`${URL}/profile/edit`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                authorization: `Bearer ${localStorage.uid}`,
+
+            },
+            body:JSON.stringify(data),
+        }).then(response => response.json());
+
+    };
 }
 
 export default AuthModel;
