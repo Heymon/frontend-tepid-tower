@@ -22,6 +22,20 @@ class AuthModel {
 
     };
 
+    static show = () => {
+        return fetch(`${URL}/profile`, {
+            method: "GET",
+            headers: {
+                // "Content-Type": "application/json",
+                authorization: `Bearer ${localStorage.uid}`,
+            },
+            // body:JSON.stringify(data),
+        }).then(response => response.json());
+
+    };
+
+
+
     static edit = data => {
         return fetch(`${URL}/profile/edit`, {
             method: "PUT",
