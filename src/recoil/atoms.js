@@ -7,6 +7,11 @@ export const userState = atom({
 
 export const gameState = atom({
     key: "gameState",
+    default: true,
+});
+
+export const resetState = atom({
+    key: "resetState",
     default: false,
 });
 

@@ -6,8 +6,9 @@ import LeftSection from '../components/LeftSection/LeftSection'
 import RightSection from '../components/RightSection/RightSection'
 
 import {useRecoilState} from "recoil";
-import {userState} from "../recoil/atoms"
+import {resetState, userState} from "../recoil/atoms"
 import {gameState} from "../recoil/atoms"
+// import {resetState} from "../recoil/atoms"
 import {userPoints} from "../recoil/atoms"
 
 import AuthModel from "../models/auth";
@@ -17,7 +18,10 @@ function Landing() {
 
     const [user,setUser] = useRecoilState(userState);
     const [gameStatus,setGameStatus] = useRecoilState(gameState);
+    const [resetStatus,setResetStatus] = useRecoilState(resetState);
     const [points,setPoints] = useRecoilState(userPoints);
+
+    console.log(resetStatus);
 
     // const prevStatusRef = useRef();
     // useEffect(() => {
@@ -26,19 +30,20 @@ function Landing() {
     // const prevStatus = prevStatusRef.current;
 
     // useEffect(function () {   
-    //     console.log(prevStatus, gameStatus)
-    //     if (prevStatus !== gameStatus) {     
-    //         console.log("checking user")
+    //     console.log(resetStatus, gameStatus)
+    //     // if (prevStatus !== gameStatus) {     
+    //         console.log("landing user")
+    //         // if(resetStatus) resetStatus = false
     //         // if (localStorage.uid) {//if local storage already has a token
     //         //     AuthModel.show().then(json => {//verify
     //         //         setUser(json.curUser);//and set the global user state
     //         //     });
     //         // }
-    //     }
-    //   }, [gameStatus]);
+    //     // }
+    //   }, [resetStatus]);
 
       useEffect(function () {   
-        
+        console.log(gameStatus);
         if (localStorage.uid) {//if local storage already has a token
             AuthModel.show().then(json => {//verify
                 setUser(json.curUser);//and set the global user state
@@ -52,8 +57,8 @@ function Landing() {
     return (
         <div className="landing">
             <LeftSection />
-            <Game />
-            <RightSection user={user} gameStatus={gameStatus} points={points}/>
+            <Game reset={resetStatus}/>
+            <RightSection user={user} gameStatus={gameStatus} points={points} />
         </div>
     )
     
