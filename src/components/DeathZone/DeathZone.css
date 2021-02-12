@@ -1,8 +1,19 @@
 .deathzone {
-    background-color: darkred;
+    background-color: transparent;
     position: absolute;
     width: 320px;
     height: 50px;
     margin: 808px 0 0 0;
 
+}
+
+.deathzone>div {
+    overflow: hidden;
+    width: 54px;
+    height: 50px;
+}
+
+.deathzone img {
+    width: 653%;
+    margin: -184px 0 0 -197px;
 }
