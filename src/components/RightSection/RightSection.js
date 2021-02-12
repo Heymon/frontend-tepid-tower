@@ -50,6 +50,7 @@ class RightSection extends React.Component {
             if (this.state.curUser) {
                 AuthModel.addScore({score: this.props.points}).then(json => {
                     console.log(json);
+
                     if (json.message === "score") {
                         
                         this.userModal("gameover--score--modal");
@@ -59,6 +60,10 @@ class RightSection extends React.Component {
                         this.userModal("gameover--highscore--modal");
                     }
                 })
+            } else  {
+
+                this.userModal("gameover--highscore--modal");
+            
             }
         } else {
             // console.log(this.props)
