@@ -287,9 +287,6 @@ class Game extends React.Component {
         playerEl.style.display="none";
         console.log("gameOver");
         this.setState({gameStatus: false, points: (this.state.curPlatform ? (this.state.curPlatform.getAttribute("id")*1000) : 0)})
-        // setTimeout(() => {
-        //     this.resetGame();
-        // }, 500); 
 
     }
 

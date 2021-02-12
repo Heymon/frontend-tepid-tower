@@ -34,11 +34,22 @@ class AuthModel {
 
     };
 
-
-
     static edit = data => {
         return fetch(`${URL}/profile/edit`, {
             method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                authorization: `Bearer ${localStorage.uid}`,
+
+            },
+            body:JSON.stringify(data),
+        }).then(response => response.json());
+
+    };
+
+    static addScore = data => {
+        return fetch(`${URL}/profile/addscore`, {
+            method: "POST",
             headers: {
                 "Content-Type": "application/json",
                 authorization: `Bearer ${localStorage.uid}`,

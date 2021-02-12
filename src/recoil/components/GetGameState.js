@@ -19,8 +19,8 @@ function GetGameState(props) {
     const prevStatus = prevStatusRef.current;
 
     useEffect(function () {
-        // setPoints(props.points);
-        // console.log(points);
+        setPoints(props.points);
+        console.log(points);
         setGameStatus(props.status);
         
         // console.log("checking user", prevStatus, props, gameStatus);

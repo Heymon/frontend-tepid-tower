@@ -41,17 +41,28 @@ class RightSection extends React.Component {
         console.log(prevProps)
         if (!this.props.gameStatus) {
             const popUp = document.querySelector(".user--modal");
-            console.log("why you not false")
             if (popUp.style.display === "flex") {
                 return
             }
             console.log("gameover");
-            // console.log(this.props.points)
-            this.userModal("gameover--modal")
+            console.log(this.props.points)
+            if (this.state.curUser) {
+                AuthModel.addScore({score: this.props.points}).then(json => {
+                    console.log(json);
+                    if (json.message === "score") {
+                        
+                        this.userModal("gameover--score--modal");
+
+                    } else if(json.message === "highscore") {
+
+                        this.userModal("gameover--highscore--modal");
+                    }
+                })
+            }
         } else {
-            console.log(this.props)
+            // console.log(this.props)
             if(this.state.reset === true) {
-                console.log("why you not false")
+
                 this.setState({reset: false});
             }
         }
@@ -267,7 +278,7 @@ class RightSection extends React.Component {
         
         if (event.target.getAttribute("class")==="playagain") {
             this.setState({reset: true})
-            this.userModal("gameover--modal");
+            this.userModal("");
             console.log(this.state.reset)
         }   
 
@@ -418,13 +429,33 @@ class RightSection extends React.Component {
                     <div className="logout" onClick={this.handleSubmit}>LOG OUT BUTTON</div>
                 </div>
 
-                <div className="gameover--modal modal">
+                <div className="gameover--highscore--modal modal">
 
                     {/* {(this.state.curUser ? <h2>{this.state.curUser.profile.highscore}</h2>: "" )} */}
                     <div>
                         <h2>THE TOWER HAS YOU NOW</h2>
                         <div>
-                            <h3>SCORE: {this.state.points}</h3>
+                            <h3>HIGHSCORE: {this.props.points}</h3>
+                            <button className="playagain" onClick={this.handleGameOverModal}>PLAY AGAIN</button>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h2>SIGN UP TO ADD YOU SCORE!</h2>
+                        <div>
+                            <button onClick={() => this.userModal("user--modal")}>SIGNUP/LOGIN</button>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div className="gameover--score--modal modal">
+
+                    {/* {(this.state.curUser ? <h2>{this.state.curUser.profile.highscore}</h2>: "" )} */}
+                    <div>
+                        <h2>THE TOWER HAS YOU NOW</h2>
+                        <div>
+                            <h3>SCORE: {this.props.points}</h3>
                             <button className="playagain" onClick={this.handleGameOverModal}>PLAY AGAIN</button>
                         </div>
                     </div>
