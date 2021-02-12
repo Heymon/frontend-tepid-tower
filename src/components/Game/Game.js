@@ -107,6 +107,7 @@ class Game extends React.Component {
     // gets the player position current position on screen
     getPlayerCurPos = () => {
         const playerEl = document.getElementById('player');
+        if(playerEl === null) return {x:0,y:0,height:0,width:0};
         const playerCurPos = playerEl.getBoundingClientRect();
         // console.log(playerCurPos);
         return playerCurPos;
