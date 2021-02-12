@@ -40,7 +40,8 @@ class RightSection extends React.Component {
                 })   
         }
 
-        console.log(prevProps)
+        console.log(this.props);
+        console.log(this.state)
         if (!this.props.gameStatus) {
             const popUp = document.querySelector(".user--modal");
             if (popUp.style.display === "flex") {
@@ -78,7 +79,7 @@ class RightSection extends React.Component {
     userModal = (class_name) => {
 
         const popUps = document.querySelectorAll(".modal");
-        console.log(popUps);
+        // console.log(popUps);
 
         if (class_name === "user--modal--logged") {
             AuthModel.show().then(json => {
@@ -146,7 +147,9 @@ class RightSection extends React.Component {
     handleLeaderboardOpt = (event) => {
         // event.preventDefault();
         //sends user info to be registered
-        event.stopPropagation();  
+        event.stopPropagation(); 
+        
+        
             
         this.userModal("leaderboard--modal");
     
@@ -289,7 +292,7 @@ class RightSection extends React.Component {
                 <GetResetState reset={this.state.reset} />
 
                 <LeaderboardModal />
-                <ControlsModal onClick={this.handleControlsOpt} />
+                <ControlsModal />
 
 
 

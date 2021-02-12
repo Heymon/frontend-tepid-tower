@@ -2,7 +2,11 @@
     flex-flow: column;
 }
 
+.controls--modal>* {
+    margin: auto;
+}
+
 .controls--modal>div {
-    width: 100%;
+    width: 96%;
     height: 50%;
 }
