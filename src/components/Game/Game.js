@@ -64,6 +64,7 @@ class Game extends React.Component {
         if (this.state.isScrolling) {
             const playerCurPos = this.getPlayerCurPos();
             if (playerCurPos.y + playerCurPos.height >= window.innerHeight - 25) {
+                console.log("should stop; didupdate bottomdeath");
                 return this.gameOver()
             }
 
@@ -160,6 +161,7 @@ class Game extends React.Component {
                         if (this.state.curPlatform) {
                             
                             if (this.state.curPlatform.getAttribute("id") > 2 && this.state.isScrolling) {
+                                console.log("should stop; landfunc bottomdeath");
                                 this.gameOver();
                                 this.setState({playerJumping: false, playerFalling: false, playerLanded: true, speed: 1.5});
                             }
@@ -353,7 +355,7 @@ class Game extends React.Component {
                     const curPos = this.getPlayerCurPos();
                     // this is not working to well //couldnt figure out why; solution if they touch wall they die
                     if( curPos.x + curPos.width >= rightBorder){//if the player reachs the border 
-                        // console.log("should stop")
+                        console.log("should stop; down rightwalldeath");
                         this.gameOver();
                         // console.log("touch wall die") //start some event here to say game over
                         this.stopMovement({x: rightBorder - curPos.width, y: this.state.playerTargetY}, 0);//stop them there and raise the flag on the rightborder
@@ -367,7 +369,7 @@ class Game extends React.Component {
                     // console.log(leftBorder);
                     const curPos = this.getPlayerCurPos();
                     if (curPos.x <= leftBorder) {
-                        // console.log("should stop")
+                        console.log("should stop; down leftwalldeath");
                         this.gameOver();
                         // console.log("touch wall die")// start some event here to say gameover
                         this.stopMovement({x: leftBorder, y: this.state.playerTargetY}, 0);//stop them there and raise the flag on the leftborder
@@ -390,7 +392,7 @@ class Game extends React.Component {
                 const rightBorder = (window.innerWidth/2) + (320/2);
                 const curPos = this.getPlayerCurPos();
                 if( curPos.x + curPos.width >= rightBorder){
-                    // console.log("game over");// game over here too just in case
+                    console.log("should stop; up rightwalldeath");
                     this.gameOver();
                     this.stopMovement({x: rightBorder - curPos.width, y: this.state.playerTargetY}, 0);
 
@@ -406,7 +408,7 @@ class Game extends React.Component {
                 const leftBorder = (window.innerWidth/2) - (320/2);
                 const curPos = this.getPlayerCurPos();
                 if (curPos.x <= leftBorder) {
-                    // console.log("game over"); //game over here just in case
+                    console.log("should stop; up lefttwalldeath");
                     this.gameOver();
                     return this.stopMovement({x: leftBorder, y: this.state.playerTargetY}, 0);
                 }else {

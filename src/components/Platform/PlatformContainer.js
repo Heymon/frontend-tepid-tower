@@ -84,13 +84,13 @@ class PlatformContainer extends React.Component {
     setEvents = () =>{
         document.addEventListener('DOMContentLoaded', this.setGameAtBegining);
 
-        document.addEventListener('click', () => {
-            console.log("deu")  
-            const levelWindow = document.querySelector(".game")
-            this.addPlatform(levelWindow);
+        // document.addEventListener('click', () => {
+        //     console.log("deu")  
+        //     const levelWindow = document.querySelector(".game")
+        //     this.addPlatform(levelWindow);
 
                     
-          });
+        //   });
   
     }
 
