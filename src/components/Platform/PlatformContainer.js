@@ -11,17 +11,28 @@ class PlatformContainer extends React.Component {
     }
 
     componentDidMount(props) {
-        this.setGameAtBegining();
+        this.setEvents();
         this.generatePlatforms();
     }
 
-    componentDidUpdate(props) {
+    componentDidUpdate(prevProps) {
         // console.log("when");
         const gameWindow = document.querySelector(".game")
         // console.log(gameWindow.scrollTop && props.curPlatform > 2);
-        if (gameWindow.scrollTop <= 100 && props.curPlatform > 2) {
-            console.log(props);
+        if (gameWindow.scrollTop <= 100 && this.props.curPlatform > 2) {
+            console.log(this.props);
             this.addPlatform(gameWindow);
+        } 
+        if(prevProps.reset === false && this.props.reset) {
+            console.log("false")
+            this.resetPlatforms();
+            // this.generatePlatforms();
+            // if (this.props.reset !== prevProps.reset) {
+            //     console.log("reset")
+            //     // this.resetPlatforms();
+            //     // this.generatePlatforms();
+                
+            // }
         }
     }
 
@@ -29,6 +40,7 @@ class PlatformContainer extends React.Component {
 
         const prePlatforms = [];
         let idGenerator = this.state.currentPlatformId;
+        console.log(idGenerator);
         for (let index = 0; index < this.state.numOfPlatforms; index++) {
             idGenerator++;
             prePlatforms.unshift(<Platform xAxis={this.getRandomPos(81)} color={"red"} key={idGenerator} idKey={idGenerator}/>);
@@ -63,11 +75,14 @@ class PlatformContainer extends React.Component {
     }
 
     setGameAtBegining = () =>{
-        document.addEventListener('DOMContentLoaded', () => {
-            console.log("set twice?")
-            const levelWindow = document.querySelector(".game")
-            levelWindow.scrollTo(0, levelWindow.scrollHeight);     
-        });
+        console.log("set twice?")
+        const levelWindow = document.querySelector(".game")
+        levelWindow.scrollTo(0, levelWindow.scrollHeight);
+         
+    }
+
+    setEvents = () =>{
+        document.addEventListener('DOMContentLoaded', this.setGameAtBegining);
 
         document.addEventListener('click', () => {
             console.log("deu")  
@@ -77,6 +92,21 @@ class PlatformContainer extends React.Component {
                     
           });
   
+    }
+
+    resetPlatforms = () => {
+
+        
+        this.setState({
+            currentPlatformId: 0,
+            platforms: [],
+            numOfPlatforms: 10
+        });
+        
+        setTimeout(() => {
+            this.generatePlatforms();
+            this.setGameAtBegining();
+        }, 100); 
     }
 
 

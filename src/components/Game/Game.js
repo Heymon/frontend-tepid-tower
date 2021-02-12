@@ -52,11 +52,18 @@ class Game extends React.Component {
 
     }
 
-    componentDidUpdate (prevState) {
+    componentDidUpdate (prevState, prevProps) {
+        console.log("testingsorry");
+        console.log(this.props.reset);
+        if(this.props.reset) {
+            console.log("reset");
+            if(!this.state.gameStatus)this.resetGame()
+        }
+        
         
         if (this.state.isScrolling) {
             const playerCurPos = this.getPlayerCurPos();
-            if (playerCurPos.y + playerCurPos.height >= window.innerHeight + 25) {
+            if (playerCurPos.y + playerCurPos.height >= window.innerHeight - 25) {
                 return this.gameOver()
             }
 
@@ -279,7 +286,47 @@ class Game extends React.Component {
         clearInterval(this.state.scrollingFunc);
         playerEl.style.display="none";
         console.log("gameOver");
-        this.setState({gameStatus: false, points: (this.state.curPlatform.getAttribute("id")*1000)})
+        this.setState({gameStatus: false, points: (this.state.curPlatform ? (this.state.curPlatform.getAttribute("id")*1000) : 0)})
+        // setTimeout(() => {
+        //     this.resetGame();
+        // }, 500); 
+
+    }
+
+    resetGame = () => {
+        const playerEl = document.getElementById('player');
+        playerEl.style.display="block";
+        const playerMeasurement = this.getPlayerCurPos();
+        // sets player initial position
+        const initPosX = window.innerWidth/2 - playerMeasurement.width/2; //at the middle of the x AXIS
+        console.log(playerMeasurement.height);
+        console.log(window.innerHeight - playerMeasurement.height);
+        const initPosY = window.innerHeight - playerMeasurement.height; //at the bottom of the screen// the subtration of 18 is to take in account the playr height
+        this.setState({
+            gameStatus: true,
+            playerTargetX: initPosX,
+            playerTargetY: initPosY,
+            
+            playerLanded: true,
+            playerJumping: false,
+            playerFalling: false,
+
+            speed:0,
+            jumpGauge: 5,
+            gauge: null,
+
+            curPlatform: null,
+
+            isScrolling: false,
+            scrollingFunc: 0,
+            scrollingSpeed: 5,
+            scrollingAdjustment: 5,
+
+            points:0,
+        });
+
+        // const playerEl = document.getElementById('player');
+        // playerEl.style.display="block";
 
     }
 
@@ -425,7 +472,7 @@ class Game extends React.Component {
             <Player playerInfo={this.state}/>
             <section className='game'>
                 <DeathZone display={this.state.isScrolling}/>
-                <PlatformContainer curPlatform={(this.state.curPlatform ? this.state.curPlatform.getAttribute("id") : 0)}/>
+                <PlatformContainer status={this.state.gameStatus} curPlatform={(this.state.curPlatform ? this.state.curPlatform.getAttribute("id") : 0)} reset={this.props.reset}/>
             </section>
             </> 
         )
