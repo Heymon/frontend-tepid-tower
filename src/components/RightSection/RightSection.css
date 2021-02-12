@@ -39,7 +39,9 @@ aside {
     position: absolute;
 
     background-color: brown;
-    width: 37%;
+    width: 490px;
+    width: 48%;
+    /* width: 37%; */
     height: 50%;
     margin: 13% 31% 0 0;
 

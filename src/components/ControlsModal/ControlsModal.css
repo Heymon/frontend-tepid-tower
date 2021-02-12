@@ -1,0 +1,8 @@
+.controls--modal {
+    flex-flow: column;
+}
+
+.controls--modal>div {
+    width: 100%;
+    height: 50%;
+}

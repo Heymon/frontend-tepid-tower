@@ -4,6 +4,7 @@ import './RightSection.css'
 import AuthModel from "../../models/auth";
 
 import GetResetState from "../../recoil/components/GetResetState";
+import ControlsModal from "../ControlsModal/ControlsModal"
 
 
 class RightSection extends React.Component {
@@ -114,44 +115,6 @@ class RightSection extends React.Component {
            
         }
 
-        // if(this.state.curUser === null) {
-
-        //     const popUp = document.querySelector(".user--modal");
-
-        //     if (popUp.style.display === "flex") {
-                
-        //         popUp.style.display = "none";
-        //         const error = document.querySelector(".error--message");
-        //         if(error) error.remove();
-        //         return
-        //     }
-            
-        //     return popUp.style.display = "flex";
-        // } else {
-        //     const formPopUp = document.querySelector(".user--modal");
-        //     if (formPopUp.style.display === "flex") formPopUp.style.display = "none";
-
-        //     const userPopUp = document.querySelector(".user--modal--logged");
-        //     if (userPopUp.style.display === "flex") {
-                
-        //         userPopUp.style.display = "none";
-        //         const error = document.querySelector(".error--message");
-        //         if(error) error.remove();
-        //         return
-        //     }
-
-        //     AuthModel.show().then(json => {
-        //         console.log(json);
-        //         if (json.field) {
-        //             const form = document.querySelector(".signup");
-        //             return form.appendChild(this.createErrorMessage(json.message));
-        //         }
-        //         this.setState({curUser: json.curUser });
-        //     });
-            
-        //     return userPopUp.style.display = "flex";
-
-        // }
 
     }
 
@@ -172,6 +135,15 @@ class RightSection extends React.Component {
             
             this.userModal("user--modal");
         }
+    }
+
+    handleControlsOpt = (event) => {
+        // event.preventDefault();
+        //sends user info to be registered
+        event.stopPropagation();  
+            
+        this.userModal("controls--modal");
+    
     }
 
     createErrorMessage = (message) => {
@@ -290,8 +262,8 @@ class RightSection extends React.Component {
             <section className="section--right">
                 <aside className="aside--top">
                     <div>Settings</div>
-                    <div>Trophies</div>
-                    <div>Controls</div>
+                    <div>LeaderBoard</div>
+                    <div onClick={this.handleControlsOpt}  >Controls</div>
                 </aside>
                 <aside className="aside--bottom">
                     <div onClick={this.handleUserOpt}>
@@ -300,6 +272,17 @@ class RightSection extends React.Component {
                 </aside>
                 
                 <GetResetState reset={this.state.reset} />
+
+                <ControlsModal onClick={this.handleControlsOpt} />
+
+
+
+
+
+
+
+
+                {/* USER MODALS TO BE MADE INTO COMPONENTS */}
                 <div className="user--modal modal">
                     <form className="signup" onSubmit={this.handleSubmit}>
                         <div className="form--input">
