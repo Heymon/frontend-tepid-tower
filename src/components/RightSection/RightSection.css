@@ -33,7 +33,8 @@ aside {
     margin: 26px 50px;
 }
 
-.user--modal {
+.modal {
+
     display: none;
     position: absolute;
 
@@ -44,6 +45,21 @@ aside {
 
     align-items: flex-start;
     justify-content: space-evenly;
+
+}
+
+.user--modal {
+
+    /* display: none;
+    position: absolute;
+
+    background-color: brown;
+    width: 37%;
+    height: 50%;
+    margin: 13% 31% 0 0;
+
+    align-items: flex-start;
+    justify-content: space-evenly; */
 }
 
 .user--modal>.signup{
@@ -63,7 +79,9 @@ aside {
 }
 
 .user--modal--logged {
-    display: none;
+    flex-wrap: wrap;
+
+    /* display: none;
     position: absolute;
 
     background-color: brown;
@@ -72,12 +90,38 @@ aside {
     margin: 13% 31% 0 0;
 
     align-items: flex-start;
-    justify-content: space-evenly;
+    justify-content: space-evenly; */
+}
+
+.user--modal--logged>div {
+    width: 65px;
+}
+
+.edit--user {
+
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.edit--user>input {
+    
+    margin: 0 0 0 12px;
+}
+
+.add--friend {
+
+    width: 53%;
+    margin: 0 0px 0 -19px;
+}
+
+.add--friend>input {
+    
+    margin: 0 0 0 12px;
 }
 
 .gameover--modal {
 
-    display: none;
+    /* display: none;
     position: absolute;
 
     background-color: brown;
@@ -86,6 +130,6 @@ aside {
     margin: 13% 31% 0 0;
 
     align-items: flex-start;
-    justify-content: space-evenly;
+    justify-content: space-evenly; */
 
 }

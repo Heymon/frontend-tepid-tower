@@ -3,10 +3,14 @@ import './RightSection.css'
 
 import AuthModel from "../../models/auth";
 
+import GetResetState from "../../recoil/components/GetResetState";
+
 
 class RightSection extends React.Component {
 
     state = {
+        reset: false,
+
         curUser:null,
 
         username: "e",
@@ -34,10 +38,22 @@ class RightSection extends React.Component {
                 })   
         }
 
+        console.log(prevProps)
         if (!this.props.gameStatus) {
+            const popUp = document.querySelector(".user--modal");
+            console.log("why you not false")
+            if (popUp.style.display === "flex") {
+                return
+            }
             console.log("gameover");
+            // console.log(this.props.points)
             this.userModal("gameover--modal")
-            console.log(this.props.points)
+        } else {
+            console.log(this.props)
+            if(this.state.reset === true) {
+                console.log("why you not false")
+                this.setState({reset: false});
+            }
         }
     }
 
@@ -61,8 +77,8 @@ class RightSection extends React.Component {
 
         for (let i = 0; i < popUps.length; i++) {
             if (popUps[i].classList.contains(class_name)) {
-                console.log("true");
-                console.log(popUps[i].style.display)
+                // console.log("true");
+                // console.log(popUps[i].style.display)
                 if (popUps[i].style.display === "flex") {
                     
                     popUps[i].style.display = "none";
@@ -132,6 +148,9 @@ class RightSection extends React.Component {
         // event.preventDefault();
         //sends user info to be registered
         event.stopPropagation();
+        if (!this.props.gameStatus) {
+            return//if on game over icon wont work
+        }
         if (this.state.curUser) {
             
             console.log(event.target);   
@@ -161,6 +180,7 @@ class RightSection extends React.Component {
 
             const form =this.state;
             delete form.curUser;
+            delete form.reset;
             AuthModel.register(form).then(json => {
                 console.log(json);
                 if (json.field) {
@@ -236,7 +256,22 @@ class RightSection extends React.Component {
             })
         }
           
-      }
+    }
+
+    handleGameOverModal = (event) => {
+        event.stopPropagation();
+        event.preventDefault();
+
+        console.log(event.target);
+        console.log(event.target.getAttribute("class"));
+        
+        if (event.target.getAttribute("class")==="playagain") {
+            this.setState({reset: true})
+            this.userModal("gameover--modal");
+            console.log(this.state.reset)
+        }   
+
+    }
 
     render () {
         return (
@@ -252,7 +287,8 @@ class RightSection extends React.Component {
                         user
                     </div>
                 </aside>
-
+                
+                <GetResetState reset={this.state.reset} />
                 <div className="user--modal modal">
                     <form className="signup" onSubmit={this.handleSubmit}>
                         <div className="form--input">
@@ -332,7 +368,7 @@ class RightSection extends React.Component {
 
                 <div className="user--modal--logged modal">
 
-                    {(this.state.curUser ? <h2>{this.state.curUser.profile.highscore}</h2>: "" )}
+                    {(this.state.curUser ? <h2>HIGHSCORE: {this.state.curUser.profile.highscore}</h2>: "" )}
                     <form className="edit--user" onSubmit={this.handleSubmit}>
 
                         <div className="form--input">
@@ -364,7 +400,7 @@ class RightSection extends React.Component {
                     <form className="add--friend" onSubmit={this.handleSubmit}>
 
                         <div className="form--input">
-                        <h2>ADD A FRIEND TO YOUR FRIEND'S LIST</h2>
+                        <h3>ADD A FRIEND TO YOUR FRIEND'S LIST</h3>
                             <label>FRIEND's EMAIL</label>
                             <input
                             type="email"
@@ -389,14 +425,14 @@ class RightSection extends React.Component {
                         <h2>THE TOWER HAS YOU NOW</h2>
                         <div>
                             <h3>SCORE: {this.state.points}</h3>
-                            <input type="submit" onSubmit="" value="PLAY AGAIN" />
+                            <button className="playagain" onClick={this.handleGameOverModal}>PLAY AGAIN</button>
                         </div>
                     </div>
 
                     <div>
                         <h2>SIGN UP TO ADD YOU SCORE!</h2>
                         <div>
-                            <input type="submit" onSubmit="" value="SIGNUP/LOGIN" />
+                            <button onClick={() => this.userModal("user--modal")}>SIGNUP/LOGIN</button>
                         </div>
                     </div>
 
