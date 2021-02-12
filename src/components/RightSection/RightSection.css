@@ -34,6 +34,7 @@ aside {
 }
 
 .modal {
+    border-radius: 0%;
 
     display: none;
     position: absolute;
@@ -43,7 +44,7 @@ aside {
     width: 48%;
     /* width: 37%; */
     height: 50%;
-    margin: 13% 31% 0 0;
+    margin: 13% 27% 0 0;
 
     /* align-items: flex-start; */
     justify-content: space-evenly;
@@ -97,6 +98,8 @@ aside {
 
 .user--modal--logged>div {
     width: 65px;
+    margin: 100px 0 0 0;
+    height: 65px;
 }
 
 .edit--user {
@@ -121,26 +124,63 @@ aside {
     margin: 0 0 0 12px;
 }
 
-.gameover--modal {
+.gameover--score--modal {
 
-    /* display: none;
-    position: absolute;
-
-    background-color: brown;
-    width: 37%;
-    height: 50%;
-    margin: 13% 31% 0 0;
-
-    align-items: flex-start;
-    justify-content: space-evenly; */
-
+    /* display: flex; */
+    flex-flow: column;
+    align-items: center;
 }
 
-user--modal>form {
+
+.gameover--score--modal>div {
+
+    margin: 0 0 0 0;
+    width: 96%;
+    height: 36%;
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+}
+
+.gameover--highscore--modal {
+
+    /* display: flex; */
+    flex-flow: column;
+    align-items: center;
+}
+
+
+.gameover--highscore--modal>div {
+
+    margin: 0 0 0 0;
+    width: 96%;
+    height: 36%;
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+}
+ 
+.user--modal>form {
     display: flex;
     flex-flow: column;
 }
 
-user--modal>form>input {
-    margin:     0 10px;
+.user--modal input {
+    margin: 0 10px;
+}
+
+.signup div:first-child {
+    margin: 39px 0 23px 0;
+}
+
+.login div:first-child {
+    margin: 125px 0 23px 0;
+}
+
+button {
+    font-size: 1.5rem;
+}
+
+.icon {
+    font-size: 68px;
 }

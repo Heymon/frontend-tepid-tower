@@ -41,7 +41,7 @@ class RightSection extends React.Component {
         }
 
         console.log(this.props);
-        console.log(this.state)
+        console.log(this.state);
         if (!this.props.gameStatus) {
             const popUp = document.querySelector(".user--modal");
             if (popUp.style.display === "flex") {
@@ -105,7 +105,7 @@ class RightSection extends React.Component {
                     if(error) error.remove();
                     // break
                 } else {
-
+                    console.log(popUps[i])
                     popUps[i].style.display = "flex";
                 }
                 // break
@@ -149,8 +149,6 @@ class RightSection extends React.Component {
         //sends user info to be registered
         event.stopPropagation(); 
         
-        
-            
         this.userModal("leaderboard--modal");
     
     }
@@ -226,7 +224,7 @@ class RightSection extends React.Component {
                 return
             })
 
-        } else if(event.target.getAttribute("class")==="logout") {
+        } else if(event.target.classList.contains("logout")) {
             
             this.userModal();
             this.setState({
@@ -238,7 +236,7 @@ class RightSection extends React.Component {
                 })
             localStorage.removeItem("uid");
 
-        } else if(event.target.getAttribute("class")==="delete") {
+        } else if(event.target.classList.contains("delete")) {
             AuthModel.delete().then(json => {
                 console.log(json);
                 if (json.field) {
@@ -279,13 +277,13 @@ class RightSection extends React.Component {
 
             <section className="section--right">
                 <aside className="aside--top">
-                    <div>Settings</div>
-                    <div onClick={this.handleLeaderboardOpt} >LeaderBoard</div>
-                    <div onClick={this.handleControlsOpt} >Controls</div>
+                    <div className="icon"><i class="fa fa-cog"></i></div>
+                    <div className="icon" onClick={this.handleLeaderboardOpt} ><i class="fa fa-trophy"></i></div>
+                    <div className="icon" onClick={this.handleControlsOpt} ><i class="fa fa-gamepad fa-lg"></i></div>
                 </aside>
                 <aside className="aside--bottom">
-                    <div onClick={this.handleUserOpt}>
-                        user
+                    <div className="icon" onClick={this.handleUserOpt}>
+                    <i class="fa fa-user"></i>
                     </div>
                 </aside>
                 
@@ -427,8 +425,9 @@ class RightSection extends React.Component {
                         <input type="" value="ADD A FRIEND" />
                     </form>
 
-                    <div className="delete" onClick={this.handleSubmit}>DELETE BUTTON</div>
-                    <div className="logout" onClick={this.handleSubmit}>LOG OUT BUTTON</div>
+                    <div className="delete icon" onClick={this.handleSubmit}><i class="delete fa fa-trash"></i></div>
+                    <div className="logout icon" onClick={this.handleSubmit}><i class="logout  fa fa-sign-out"></i></div>
+                    
                 </div>
 
                 <div className="gameover--highscore--modal modal">

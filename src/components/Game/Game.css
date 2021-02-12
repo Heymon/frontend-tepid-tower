@@ -1,5 +1,8 @@
 .game{
+    background-image: url('../../assets/StoneWall_TXR.png');
     height: 100vh;
     background-color: aqua;
-    overflow: auto;/* auto for testing change to hidden  */
+    background-size: contain;
+    /* background-attachment: local; */
+    overflow: hidden;/* auto for testing change to hidden  */
 }

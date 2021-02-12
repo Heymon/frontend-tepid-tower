@@ -61,7 +61,7 @@ class PlatformContainer extends React.Component {
         const prePlatforms = this.state.platforms;
         let idGenerator = this.state.currentPlatformId;
         idGenerator++;
-        const newPlatform = <Platform xAxis={this.getRandomPos(81)} color={"blue"} key={idGenerator} idKey={idGenerator}/>
+        const newPlatform = <Platform xAxis={this.getRandomPos(81)} color={(idGenerator < 20 ? "blue" : "green")} key={idGenerator} idKey={idGenerator}/>
         console.log("added platform");
         
         prePlatforms.pop();
