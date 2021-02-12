@@ -1,4 +1,5 @@
 import React from "react";
+import character from"../../assets/16bitcharacter.jpg"
 
 import './Player.css';
 
@@ -10,7 +11,7 @@ class Player extends React.Component{
                 transform: `translateY(${this.props.playerInfo.playerTargetY}px) translateX(${this.props.playerInfo.playerTargetX}px)` ,
                 transition: `${this.props.playerInfo.speed}s linear`
                 }}>
-                    Player
+                    <img src={character} />
                 </div>
         )
     }
