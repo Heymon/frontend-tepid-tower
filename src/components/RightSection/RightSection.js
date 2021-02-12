@@ -105,7 +105,7 @@ class RightSection extends React.Component {
                     if(error) error.remove();
                     // break
                 } else {
-                    console.log(popUps[i])
+                    // console.log(popUps[i])
                     popUps[i].style.display = "flex";
                 }
                 // break
@@ -147,7 +147,10 @@ class RightSection extends React.Component {
     handleLeaderboardOpt = (event) => {
         // event.preventDefault();
         //sends user info to be registered
-        event.stopPropagation(); 
+        event.stopPropagation();
+        if (!this.props.gameStatus) {
+            return//if on game over icon wont work
+        } 
         
         this.userModal("leaderboard--modal");
     
@@ -156,7 +159,10 @@ class RightSection extends React.Component {
     handleControlsOpt = (event) => {
         // event.preventDefault();
         //sends user info to be registered
-        event.stopPropagation();  
+        event.stopPropagation();
+        if (!this.props.gameStatus) {
+            return//if on game over icon wont work
+        }  
             
         this.userModal("controls--modal");
     
