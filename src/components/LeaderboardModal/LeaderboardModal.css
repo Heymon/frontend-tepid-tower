@@ -1,0 +1,24 @@
+
+.leaderboard--modal {
+    flex-flow: column;
+    align-items: center;
+}
+
+
+.leaderboard--modal>div {
+    width: 100%;
+    height: 75%;
+}
+
+.leaderboard--modal table{
+    margin: auto;  
+    max-height: 100%;
+    width: 79%;
+    border-style: inset;
+}
+
+.leaderboard--modal th{
+    text-align: inherit;
+    margin: auto;  
+    max-height: 100%;
+}

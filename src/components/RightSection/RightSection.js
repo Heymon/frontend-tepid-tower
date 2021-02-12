@@ -5,6 +5,7 @@ import AuthModel from "../../models/auth";
 
 import GetResetState from "../../recoil/components/GetResetState";
 import ControlsModal from "../ControlsModal/ControlsModal"
+import LeaderboardModal from "../LeaderboardModal/LeaderboardModal"
 
 
 class RightSection extends React.Component {
@@ -142,6 +143,15 @@ class RightSection extends React.Component {
         }
     }
 
+    handleLeaderboardOpt = (event) => {
+        // event.preventDefault();
+        //sends user info to be registered
+        event.stopPropagation();  
+            
+        this.userModal("leaderboard--modal");
+    
+    }
+
     handleControlsOpt = (event) => {
         // event.preventDefault();
         //sends user info to be registered
@@ -267,8 +277,8 @@ class RightSection extends React.Component {
             <section className="section--right">
                 <aside className="aside--top">
                     <div>Settings</div>
-                    <div>LeaderBoard</div>
-                    <div onClick={this.handleControlsOpt}  >Controls</div>
+                    <div onClick={this.handleLeaderboardOpt} >LeaderBoard</div>
+                    <div onClick={this.handleControlsOpt} >Controls</div>
                 </aside>
                 <aside className="aside--bottom">
                     <div onClick={this.handleUserOpt}>
@@ -278,6 +288,7 @@ class RightSection extends React.Component {
                 
                 <GetResetState reset={this.state.reset} />
 
+                <LeaderboardModal />
                 <ControlsModal onClick={this.handleControlsOpt} />
 
 

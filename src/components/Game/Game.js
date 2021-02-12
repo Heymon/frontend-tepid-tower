@@ -284,7 +284,7 @@ class Game extends React.Component {
 
     gameOver = () => {
         const playerEl = document.getElementById('player');
-        playerEl.style.color="blue";
+        // playerEl.style.color="blue";
         clearInterval(this.state.scrollingFunc);
         playerEl.style.display="none";
         console.log("gameOver");

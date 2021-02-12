@@ -45,7 +45,7 @@ aside {
     height: 50%;
     margin: 13% 31% 0 0;
 
-    align-items: flex-start;
+    /* align-items: flex-start; */
     justify-content: space-evenly;
 
 }
@@ -134,4 +134,13 @@ aside {
     align-items: flex-start;
     justify-content: space-evenly; */
 
+}
+
+user--modal>form {
+    display: flex;
+    flex-flow: column;
+}
+
+user--modal>form>input {
+    margin:     0 10px;
 }
