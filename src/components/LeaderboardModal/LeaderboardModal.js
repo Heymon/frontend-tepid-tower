@@ -11,9 +11,9 @@ function LeaderboardModal(props) {
 
     function getUsers() {
         LeaderboardModel.showGlobal().then(json => {
-            console.log(json.curUsers)
-            const array = json.curUsers;
-            array.sort((b,a) => a.profile.highscore - b.profile.highscore)
+            console.log(json.curProfiles)
+            const array = json.curProfiles;
+            // array.sort((b,a) => a.profile.highscore - b.profile.highscore)
             setUsers(array);
             console.log(users);
         })
@@ -40,11 +40,11 @@ function LeaderboardModal(props) {
                             <th>Score</th>
                             <th>Country</th>
                         </tr>
-                        {users.map((item, index) => {
+                        {users.map((item) => {
                                 return <tr>
-                                            <td>{item.profile.username}</td>
-                                            <td>{item.profile.highscore}</td>
-                                            <td>{item.profile.country}</td>
+                                            <td>{item.username}</td>
+                                            <td>{item.highscore}</td>
+                                            <td>{item.country}</td>
                                         </tr>
                             })} 
                     </table>
