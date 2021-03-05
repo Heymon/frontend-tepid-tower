@@ -428,7 +428,7 @@ class RightSection extends React.Component {
                             />
                         </div>
                         
-                        <input type="" value="ADD A FRIEND" />
+                        <input type="submit" value="ADD A FRIEND" />
                     </form>
 
                     <div className="delete icon" onClick={this.handleSubmit}><i class="delete fa fa-trash"></i></div>
