@@ -15,6 +15,8 @@ class RightSection extends React.Component {
 
         curUser:null,
 
+        friendEmail:"",
+
         username: "e",
         email: "",
         country: "",
@@ -184,6 +186,7 @@ class RightSection extends React.Component {
         if (event.target.getAttribute("class")==="signup") {
 
             const form =this.state;
+            delete form.friendEmail;
             delete form.curUser;
             delete form.reset;
             AuthModel.register(form).then(json => {
@@ -230,7 +233,33 @@ class RightSection extends React.Component {
                 return
             })
 
-        } else if(event.target.classList.contains("logout")) {
+        } else if(event.target.getAttribute("class")==="add--friend"){
+            AuthModel.addFriend({friendEmail: this.state.friendEmail}).then(json => {
+                console.log(json);
+                const error = document.querySelector(".error--message");
+                if(error) error.remove();
+
+                if (json.field) {
+                    if (json.status===200) {
+                        console.log("hey")
+                        const test = document.querySelector(".add--friend > * > input");
+                        test.setAttribute("value", "");
+                        test.value = test.friendEmail = "";
+                        console.log(test);
+                        this.setState({friendEmail: ""})
+                    }
+                    const form = document.querySelector(".add--friend");
+                    return form.appendChild(this.createErrorMessage(json.message));
+                }
+                // this.setState({
+                //     curUser: json.updatedUser, 
+                //     country: json.updatedUser.profile.country,
+                //     username: json.updatedUser.profile.username,
+                // });
+                return
+            })
+
+        }else if(event.target.classList.contains("logout")) {
             
             this.userModal();
             this.setState({
@@ -421,10 +450,10 @@ class RightSection extends React.Component {
                             <label>FRIEND's EMAIL</label>
                             <input
                             type="email"
-                            name="email"
+                            name="friendEmail"
                             required
-                            // onChange={e => this.setState({username: e.target.value})}
-                            // value={this.state.username}
+                            onChange={e => this.setState({friendEmail: e.target.value})}
+                            value={this.friendEmail}
                             />
                         </div>
                         
