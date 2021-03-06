@@ -60,6 +60,19 @@ class AuthModel {
 
     };
 
+    static addFriend = data => {
+        return fetch(`${URL}/profile/addfriend`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                authorization: `Bearer ${localStorage.uid}`,
+
+            },
+            body:JSON.stringify(data),
+        }).then(response => response.json());
+
+    };
+
     static delete = data => {
         return fetch(`${URL}/user/delete`, {
             method: "DELETE",
