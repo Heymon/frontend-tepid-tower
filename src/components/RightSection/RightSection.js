@@ -219,6 +219,8 @@ class RightSection extends React.Component {
         } else if(event.target.getAttribute("class")==="edit--user"){
             AuthModel.edit({username: this.state.username, country: this.state.country}).then(json => {
                 console.log(json);
+                const error = document.querySelector(".error--message");
+                if(error) error.remove();
                 if (json.field) {
                     const form = document.querySelector(".edit--user");
                     return form.appendChild(this.createErrorMessage(json.message));
@@ -228,8 +230,6 @@ class RightSection extends React.Component {
                     country: json.updatedUser.profile.country,
                     username: json.updatedUser.profile.username,
                 });
-                const error = document.querySelector(".error--message");
-                if(error) error.remove();
                 return
             })
 
@@ -251,11 +251,6 @@ class RightSection extends React.Component {
                     const form = document.querySelector(".add--friend");
                     return form.appendChild(this.createErrorMessage(json.message));
                 }
-                // this.setState({
-                //     curUser: json.updatedUser, 
-                //     country: json.updatedUser.profile.country,
-                //     username: json.updatedUser.profile.username,
-                // });
                 return
             })
 
