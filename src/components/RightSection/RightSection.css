@@ -126,9 +126,9 @@ aside {
     margin: 0 0 0 12px;
 }
 
-.gameover--score--modal {
+/* .gameover--score--modal {
 
-    /* display: flex; */
+    display: flex; comentado
     flex-flow: column;
     align-items: center;
 }
@@ -142,17 +142,16 @@ aside {
     display: flex;
     flex-flow: column;
     align-items: center;
-}
+} */
 
-.gameover--highscore--modal {
+/* .gameover--modal {
 
-    /* display: flex; */
     flex-flow: column;
     align-items: center;
 }
 
 
-.gameover--highscore--modal>div {
+.gameover--modal>div {
 
     margin: 0 0 0 0;
     width: 96%;
@@ -160,7 +159,7 @@ aside {
     display: flex;
     flex-flow: column;
     align-items: center;
-}
+} */
  
 .user--modal>form {
     display: flex;

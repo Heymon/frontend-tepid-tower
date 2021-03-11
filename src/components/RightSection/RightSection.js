@@ -1,11 +1,12 @@
 import React from 'react';
-import './RightSection.css'
+import './RightSection.css';
 
 import AuthModel from "../../models/auth";
 
 import GetResetState from "../../recoil/components/GetResetState";
-import ControlsModal from "../ControlsModal/ControlsModal"
-import LeaderboardModal from "../LeaderboardModal/LeaderboardModal"
+import ControlsModal from "../ControlsModal/ControlsModal";
+import LeaderboardModal from "../LeaderboardModal/LeaderboardModal";
+import GameOverModal from "../GameOverModal/GameOverModal";
 
 
 class RightSection extends React.Component {
@@ -16,6 +17,8 @@ class RightSection extends React.Component {
         curUser:null,
 
         friendEmail:"",
+
+        highscore:0,
 
         username: "e",
         email: "",
@@ -44,9 +47,10 @@ class RightSection extends React.Component {
 
         console.log(this.props);
         console.log(this.state);
-        if (!this.props.gameStatus) {
-            const popUp = document.querySelector(".user--modal");
-            if (popUp.style.display === "flex") {
+        if (!this.props.gameStatus && !this.state.reset) {
+            const loggingIn = document.querySelector(".user--modal");
+            const stillOver = document.querySelector(".gameover--modal");
+            if (loggingIn.style.display === "flex" || stillOver.style.display === "flex") {
                 return
             }
             console.log("gameover");
@@ -57,29 +61,33 @@ class RightSection extends React.Component {
 
                     if (json.message === "score") {
                         
-                        this.userModal("gameover--score--modal");
+                        this.setState({highscore: false});
+                        // this.userModal("gameover--modal");
+                        // console.log(stillOver.style.display);
 
                     } else if(json.message === "highscore") {
 
-                        this.userModal("gameover--highscore--modal");
+                        this.setState({highscore: true});
+                        // this.userModal("gameover--modal");
                     }
                 })
             } else  {
 
-                this.userModal("gameover--highscore--modal");
+                this.setState({highscore: true});
+                // this.userModal("gameover--modal");
             
             }
-        } else {
+            this.userModal("gameover--modal");
+        } else if (this.props.gameStatus && this.state.reset){
             // console.log(this.props)
-            if(this.state.reset === true) {
+            // if(this.state.reset === true) {
 
                 this.setState({reset: false});
-            }
+            // }
         }
     }
 
     userModal = (class_name) => {
-
         const popUps = document.querySelectorAll(".modal");
         // console.log(popUps);
 
@@ -99,6 +107,7 @@ class RightSection extends React.Component {
         for (let i = 0; i < popUps.length; i++) {
             if (popUps[i].classList.contains(class_name)) {
                 // console.log("true");
+                // console.log(popUps[i])
                 // console.log(popUps[i].style.display)
                 if (popUps[i].style.display === "flex") {
                     
@@ -112,6 +121,8 @@ class RightSection extends React.Component {
                 }
                 // break
             } else {
+                // console.log(popUps[i])
+                // console.log(popUps[i].style.display)
                 // if (popUps[i].style.display === "flex") {
                     
                 //     popUps[i].style.display = "none";
@@ -186,6 +197,7 @@ class RightSection extends React.Component {
         if (event.target.getAttribute("class")==="signup") {
 
             const form =this.state;
+            delete form.highscore;
             delete form.friendEmail;
             delete form.curUser;
             delete form.reset;
@@ -289,10 +301,10 @@ class RightSection extends React.Component {
 
     handleGameOverModal = (event) => {
         event.stopPropagation();
-        event.preventDefault();
+        event.preventDefault(); //dont think i need this
 
         console.log(event.target);
-        console.log(event.target.getAttribute("class"));
+        // console.log(event.target.getAttribute("class"));
         
         if (event.target.getAttribute("class")==="playagain") {
             this.setState({reset: true})
@@ -460,45 +472,8 @@ class RightSection extends React.Component {
                     
                 </div>
 
-                <div className="gameover--highscore--modal modal">
+                <GameOverModal points={this.props.points} highscore={this.state.highscore} user={this.state.curUser} playAgainFunc={this.handleGameOverModal} signUpFunc={() => this.userModal("user--modal")} />
 
-                    {/* {(this.state.curUser ? <h2>{this.state.curUser.profile.highscore}</h2>: "" )} */}
-                    <div>
-                        <h2>THE TOWER HAS YOU NOW</h2>
-                        <div>
-                            <h3>HIGHSCORE: {this.props.points}</h3>
-                            <button className="playagain" onClick={this.handleGameOverModal}>PLAY AGAIN</button>
-                        </div>
-                    </div>
-
-                    <div>
-                        <h2>SIGN UP TO ADD YOU SCORE!</h2>
-                        <div>
-                            <button onClick={() => this.userModal("user--modal")}>SIGNUP/LOGIN</button>
-                        </div>
-                    </div>
-
-                </div>
-
-                <div className="gameover--score--modal modal">
-
-                    {/* {(this.state.curUser ? <h2>{this.state.curUser.profile.highscore}</h2>: "" )} */}
-                    <div>
-                        <h2>THE TOWER HAS YOU NOW</h2>
-                        <div>
-                            <h3>SCORE: {this.props.points}</h3>
-                            <button className="playagain" onClick={this.handleGameOverModal}>PLAY AGAIN</button>
-                        </div>
-                    </div>
-
-                    <div>
-                        <h2>SIGN UP TO ADD YOU SCORE!</h2>
-                        <div>
-                            <button onClick={() => this.userModal("user--modal")}>SIGNUP/LOGIN</button>
-                        </div>
-                    </div>
-
-                </div>
 
             </section>
                 
