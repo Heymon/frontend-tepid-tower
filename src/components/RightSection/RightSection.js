@@ -226,6 +226,16 @@ class RightSection extends React.Component {
                     password: ""
                     })
                 localStorage.setItem("uid", json.signedJwt);
+                //DONE if is on gameOver add score and restart the game
+                if(!this.props.gameStatus && !this.state.reset) {
+                    AuthModel.addScore({score: this.props.points}).then(json => {
+                        console.log(json);
+                        return this.userModal("user--modal--logged");
+                    });
+                    this.handleGameRestart(null);
+                    return
+                    // return this.userModal("");
+                }
                 return this.userModal("user--modal--logged");
             })
         } else if(event.target.getAttribute("class")==="edit--user"){
@@ -299,18 +309,20 @@ class RightSection extends React.Component {
           
     }
 
-    handleGameOverModal = (event) => {
-        event.stopPropagation();
-        event.preventDefault(); //dont think i need this
+    handleGameRestart = (event) => {
+        if (event) {
+            event.stopPropagation();
+            // event.preventDefault(); //dont think i need this
+        }
 
-        console.log(event.target);
+        // console.log(event.target);
         // console.log(event.target.getAttribute("class"));
         
-        if (event.target.getAttribute("class")==="playagain") {
+        // if (event.target.getAttribute("class")==="playagain") {
             this.setState({reset: true})
             this.userModal("");
             console.log(this.state.reset)
-        }   
+        // }   
 
     }
 
@@ -472,7 +484,7 @@ class RightSection extends React.Component {
                     
                 </div>
 
-                <GameOverModal points={this.props.points} highscore={this.state.highscore} user={this.state.curUser} playAgainFunc={this.handleGameOverModal} signUpFunc={() => this.userModal("user--modal")} />
+                <GameOverModal points={this.props.points} highscore={this.state.highscore} user={this.state.curUser} playAgainFunc={this.handleGameRestart} signUpFunc={() => this.userModal("user--modal")} />
 
 
             </section>
