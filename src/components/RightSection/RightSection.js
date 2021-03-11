@@ -234,7 +234,7 @@ class RightSection extends React.Component {
                     });
                     this.handleGameRestart(null);
                     return
-                    // return this.userModal("");
+                    // return this.userModal(""); 
                 }
                 return this.userModal("user--modal--logged");
             })
@@ -312,13 +312,13 @@ class RightSection extends React.Component {
     handleGameRestart = (event) => {
         if (event) {
             event.stopPropagation();
-            // event.preventDefault(); //dont think i need this
+            // event.preventDefault(); //dont need this
         }
 
         // console.log(event.target);
         // console.log(event.target.getAttribute("class"));
         
-        // if (event.target.getAttribute("class")==="playagain") {
+        // if (event.target.getAttribute("class")==="playagain") { also dont need this
             this.setState({reset: true})
             this.userModal("");
             console.log(this.state.reset)
