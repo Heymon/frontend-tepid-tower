@@ -67,7 +67,7 @@ aside {
     justify-content: space-evenly; */
 }
 
-.user--modal>.signup{
+/* .user--modal>.signup{
 
     width: 50%;
 }
@@ -81,12 +81,13 @@ aside {
     flex-direction: column;
     margin: 22px 0px;
     padding: 0 10px;
-}
+} */
 
-.user--modal--logged {
+/* .user--modal--logged {
     flex-wrap: wrap;
 
-    /* display: none;
+    ///this was already commented off
+    display: none;
     position: absolute;
 
     background-color: brown;
@@ -95,10 +96,11 @@ aside {
     margin: 13% 31% 0 0;
 
     align-items: flex-start;
-    justify-content: space-evenly; */
-}
+    justify-content: space-evenly;
+    ///
+} */
 
-.user--modal--logged>div {
+/* .user--modal--logged>div {
     width: 65px;
     margin: 100px 0 0 0;
     height: 65px;
@@ -124,7 +126,7 @@ aside {
 .add--friend>input {
     
     margin: 0 0 0 12px;
-}
+} */
 
 /* .gameover--score--modal {
 
@@ -161,7 +163,7 @@ aside {
     align-items: center;
 } */
  
-.user--modal>form {
+/* .user--modal>form {
     display: flex;
     flex-flow: column;
 }
@@ -180,7 +182,7 @@ aside {
 
 button {
     font-size: 1.5rem;
-}
+} */
 
 .icon {
     font-size: 68px;

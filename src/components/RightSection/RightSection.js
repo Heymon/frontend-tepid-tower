@@ -6,6 +6,7 @@ import AuthModel from "../../models/auth";
 import GetResetState from "../../recoil/components/GetResetState";
 import ControlsModal from "../ControlsModal/ControlsModal";
 import LeaderboardModal from "../LeaderboardModal/LeaderboardModal";
+import UserModal from "../UserModal/UserModal";
 import GameOverModal from "../GameOverModal/GameOverModal";
 
 
@@ -18,12 +19,12 @@ class RightSection extends React.Component {
 
         friendEmail:"",
 
-        highscore:0,
+        highscore:false,
 
-        username: "e",
-        email: "",
-        country: "",
-        password: ""
+        // username: "e",
+        // email: "",
+        // country: "",
+        // password: ""
     }
 
     componentDidMount() {
@@ -31,17 +32,17 @@ class RightSection extends React.Component {
     }
 
     componentDidUpdate(prevProps) {
-        console.log("humm");
-        console.log(this.props.user);
-        console.log(prevProps.user);
+        // console.log("humm");
+        // console.log(this.props.user);
+        // console.log(prevProps.user);
         if (this.props.user !== prevProps.user) {
             console.log("humm");
             this.setState({
                 curUser: this.props.user,
-                curUser: this.props.user, 
-                country: this.props.user.profile.country,
-                username: this.props.user.profile.username,
-                password: ""
+                // curUser: this.props.user, 
+                // country: this.props.user.profile.country,
+                // username: this.props.user.profile.username,
+                // password: ""
                 })   
         }
 
@@ -55,7 +56,8 @@ class RightSection extends React.Component {
             }
             console.log("gameover");
             console.log(this.props.points)
-            if (this.state.curUser) {
+            // if (this.state.curUser) {
+            if (this.props.user) {
                 AuthModel.addScore({score: this.props.points}).then(json => {
                     console.log(json);
 
@@ -145,7 +147,8 @@ class RightSection extends React.Component {
         if (!this.props.gameStatus) {
             return//if on game over icon wont work
         }
-        if (this.state.curUser) {
+        // if (this.state.curUser) {
+        if (this.props.user) {
             
             console.log(event.target);   
             
@@ -181,135 +184,135 @@ class RightSection extends React.Component {
     
     }
 
-    createErrorMessage = (message) => {
+    // createErrorMessage = (message) => {
 
-        let element = document.createElement("p");
-        element.appendChild(document.createTextNode(message));
-        element.setAttribute("class", "error--message");
-        return element;
-    }
+    //     let element = document.createElement("p");
+    //     element.appendChild(document.createTextNode(message));
+    //     element.setAttribute("class", "error--message");
+    //     return element;
+    // }
 
-    handleSubmit = (event) => {
-        event.stopPropagation();
-        event.preventDefault();
-        console.log(event.target.getAttribute("class"));
+    // handleSubmit = (event) => {
+    //     event.stopPropagation();
+    //     event.preventDefault();
+    //     console.log(event.target.getAttribute("class"));
         
-        if (event.target.getAttribute("class")==="signup") {
+    //     if (event.target.getAttribute("class")==="signup") {
 
-            const form =this.state;
-            delete form.highscore;
-            delete form.friendEmail;
-            delete form.curUser;
-            delete form.reset;
-            AuthModel.register(form).then(json => {
-                console.log(json);
-                if (json.field) {
-                    const form = document.querySelector(".signup");
-                    return form.appendChild(this.createErrorMessage(json.message));
-                }
-            });
-            this.setState({password: ""});
-        } else if(event.target.getAttribute("class")==="login"){
-            AuthModel.login({email:this.state.email, password: this.state.password}).then(json => {
-                console.log(json);
-                const error = document.querySelector(".error--message");
-                if(error) error.remove();
-                if (json.field) {
-                    const form = document.querySelector(".login");
-                    return form.appendChild(this.createErrorMessage(json.message));
-                }
+    //         const form =this.state;
+    //         delete form.highscore;
+    //         delete form.friendEmail;
+    //         delete form.curUser;
+    //         delete form.reset;
+    //         AuthModel.register(form).then(json => {
+    //             console.log(json);
+    //             if (json.field) {
+    //                 const form = document.querySelector(".signup");
+    //                 return form.appendChild(this.createErrorMessage(json.message));
+    //             }
+    //         });
+    //         this.setState({password: ""});
+    //     } else if(event.target.getAttribute("class")==="login"){
+    //         AuthModel.login({email:this.state.email, password: this.state.password}).then(json => {
+    //             console.log(json);
+    //             const error = document.querySelector(".error--message");
+    //             if(error) error.remove();
+    //             if (json.field) {
+    //                 const form = document.querySelector(".login");
+    //                 return form.appendChild(this.createErrorMessage(json.message));
+    //             }
 
-                this.setState({
-                    curUser: json.foundUser, 
-                    country: json.foundUser.profile.country,
-                    username: json.foundUser.profile.username,
-                    password: ""
-                    })
-                localStorage.setItem("uid", json.signedJwt);
-                //DONE if is on gameOver add score and restart the game
-                if(!this.props.gameStatus && !this.state.reset) {
-                    AuthModel.addScore({score: this.props.points}).then(json => {
-                        console.log(json);
-                        return this.userModal("user--modal--logged");
-                    });
-                    this.handleGameRestart(null);
-                    return
-                    // return this.userModal(""); 
-                }
-                return this.userModal("user--modal--logged");
-            })
-        } else if(event.target.getAttribute("class")==="edit--user"){
-            AuthModel.edit({username: this.state.username, country: this.state.country}).then(json => {
-                console.log(json);
-                const error = document.querySelector(".error--message");
-                if(error) error.remove();
-                if (json.field) {
-                    const form = document.querySelector(".edit--user");
-                    return form.appendChild(this.createErrorMessage(json.message));
-                }
-                this.setState({
-                    curUser: json.updatedUser, 
-                    country: json.updatedUser.profile.country,
-                    username: json.updatedUser.profile.username,
-                });
-                return
-            })
+    //             this.setState({
+    //                 curUser: json.foundUser, 
+    //                 country: json.foundUser.profile.country,
+    //                 username: json.foundUser.profile.username,
+    //                 password: ""
+    //                 })
+    //             localStorage.setItem("uid", json.signedJwt);
+    //             //DONE if is on gameOver add score and restart the game
+    //             if(!this.props.gameStatus && !this.state.reset) {
+    //                 AuthModel.addScore({score: this.props.points}).then(json => {
+    //                     console.log(json);
+    //                     return this.userModal("user--modal--logged");
+    //                 });
+    //                 this.handleGameRestart(null);
+    //                 return
+    //                 // return this.userModal(""); 
+    //             }
+    //             return this.userModal("user--modal--logged");
+    //         })
+    //     } else if(event.target.getAttribute("class")==="edit--user"){
+    //         AuthModel.edit({username: this.state.username, country: this.state.country}).then(json => {
+    //             console.log(json);
+    //             const error = document.querySelector(".error--message");
+    //             if(error) error.remove();
+    //             if (json.field) {
+    //                 const form = document.querySelector(".edit--user");
+    //                 return form.appendChild(this.createErrorMessage(json.message));
+    //             }
+    //             this.setState({
+    //                 curUser: json.updatedUser, 
+    //                 country: json.updatedUser.profile.country,
+    //                 username: json.updatedUser.profile.username,
+    //             });
+    //             return
+    //         })
 
-        } else if(event.target.getAttribute("class")==="add--friend"){
-            AuthModel.addFriend({friendEmail: this.state.friendEmail}).then(json => {
-                console.log(json);
-                const error = document.querySelector(".error--message");
-                if(error) error.remove();
+    //     } else if(event.target.getAttribute("class")==="add--friend"){
+    //         AuthModel.addFriend({friendEmail: this.state.friendEmail}).then(json => {
+    //             console.log(json);
+    //             const error = document.querySelector(".error--message");
+    //             if(error) error.remove();
 
-                if (json.field) {
-                    if (json.status===200) {
-                        console.log("hey")
-                        const test = document.querySelector(".add--friend > * > input");
-                        test.setAttribute("value", "");
-                        test.value = test.friendEmail = "";
-                        console.log(test);
-                        this.setState({friendEmail: ""})
-                    }
-                    const form = document.querySelector(".add--friend");
-                    return form.appendChild(this.createErrorMessage(json.message));
-                }
-                return
-            })
+    //             if (json.field) {
+    //                 if (json.status===200) {
+    //                     console.log("hey")
+    //                     const test = document.querySelector(".add--friend > * > input");
+    //                     test.setAttribute("value", "");
+    //                     test.value = test.friendEmail = "";
+    //                     console.log(test);
+    //                     this.setState({friendEmail: ""})
+    //                 }
+    //                 const form = document.querySelector(".add--friend");
+    //                 return form.appendChild(this.createErrorMessage(json.message));
+    //             }
+    //             return
+    //         })
 
-        }else if(event.target.classList.contains("logout")) {
+    //     }else if(event.target.classList.contains("logout")) {
             
-            this.userModal();
-            this.setState({
-                curUser: null, 
-                country: "",
-                username: "",
-                email: "",
-                password: ""
-                })
-            localStorage.removeItem("uid");
+    //         this.userModal();
+    //         this.setState({
+    //             curUser: null, 
+    //             country: "",
+    //             username: "",
+    //             email: "",
+    //             password: ""
+    //             })
+    //         localStorage.removeItem("uid");
 
-        } else if(event.target.classList.contains("delete")) {
-            AuthModel.delete().then(json => {
-                console.log(json);
-                if (json.field) {
-                    const form = document.querySelector(".edit--user");
-                    return form.appendChild(this.createErrorMessage(json.message));
-                }
-                this.userModal();
-                this.setState({
-                    curUser: null, 
-                    country: "",
-                    username: "",
-                    email: "",
-                    password: ""
-                    })
-                localStorage.removeItem("uid");
-            })
-        }
-          
-    }
+    //     } else if(event.target.classList.contains("delete")) {
+    //         AuthModel.delete().then(json => {
+    //             console.log(json);
+    //             if (json.field) {
+    //                 const form = document.querySelector(".edit--user");
+    //                 return form.appendChild(this.createErrorMessage(json.message));
+    //             }
+    //             this.userModal();
+    //             this.setState({
+    //                 curUser: null, 
+    //                 country: "",
+    //                 username: "",
+    //                 email: "",
+    //                 password: ""
+    //                 })
+    //             localStorage.removeItem("uid");
+    //         })
+    //     }     
+    // }
 
     handleGameRestart = (event) => {
+        console.log(event);
         if (event) {
             event.stopPropagation();
             // event.preventDefault(); //dont need this
@@ -331,13 +334,13 @@ class RightSection extends React.Component {
 
             <section className="section--right">
                 <aside className="aside--top">
-                    <div className="icon"><i class="fa fa-cog"></i></div>
-                    <div className="icon" onClick={this.handleLeaderboardOpt} ><i class="fa fa-trophy"></i></div>
-                    <div className="icon" onClick={this.handleControlsOpt} ><i class="fa fa-gamepad fa-lg"></i></div>
+                    <div className="icon"><i className="fa fa-cog"></i></div>
+                    <div className="icon" onClick={this.handleLeaderboardOpt} ><i className="fa fa-trophy"></i></div>
+                    <div className="icon" onClick={this.handleControlsOpt} ><i className="fa fa-gamepad fa-lg"></i></div>
                 </aside>
                 <aside className="aside--bottom">
                     <div className="icon" onClick={this.handleUserOpt}>
-                    <i class="fa fa-user"></i>
+                    <i className="fa fa-user"></i>
                     </div>
                 </aside>
                 
@@ -346,7 +349,7 @@ class RightSection extends React.Component {
                 <LeaderboardModal />
                 <ControlsModal />
 
-
+                <UserModal user={this.state.curUser} points={this.props.points} gameStatus={this.props.gameStatus} isReseting={this.state.reset} submitHandler={this.handleSubmit} changeModal={(className) => this.userModal(className)} playAgainFunc={this.handleGameRestart}/>
 
 
 
@@ -354,7 +357,7 @@ class RightSection extends React.Component {
 
 
                 {/* USER MODALS TO BE MADE INTO COMPONENTS */}
-                <div className="user--modal modal">
+                {/* <div className="user--modal modal">
                     <form className="signup" onSubmit={this.handleSubmit}>
                         <div className="form--input">
                             <label>USERNAME</label>
@@ -482,9 +485,9 @@ class RightSection extends React.Component {
                     <div className="delete icon" onClick={this.handleSubmit}><i class="delete fa fa-trash"></i></div>
                     <div className="logout icon" onClick={this.handleSubmit}><i class="logout  fa fa-sign-out"></i></div>
                     
-                </div>
+                </div> */}
 
-                <GameOverModal points={this.props.points} highscore={this.state.highscore} user={this.state.curUser} playAgainFunc={this.handleGameRestart} signUpFunc={() => this.userModal("user--modal")} />
+                <GameOverModal points={this.props.points} highscore={this.state.highscore} user={this.props.user} playAgainFunc={this.handleGameRestart} signUpFunc={() => this.userModal("user--modal")} />
 
 
             </section>
