@@ -50,12 +50,18 @@ class UserModal extends React.Component {
         return element;
     }
 
-    clearInput = (className) => {//tem q checar isso aqui q eu nao tenho certeza como ta funcionando
+    clearInput = (className) => {//it finds the input elements in the html and sets their input value to empty, so that it will match with the state variables
 
-        const inputEl = document.querySelector(`.${className} > * > input`);
-
-        inputEl.value = inputEl[`${inputEl.name}`] = "";
-        // inputEl.value = inputEl[`${className}`] = "";
+        // const inputEl = document.querySelector(`.${className} > * > input`);
+        const elInputList = document.querySelectorAll(`.${className} > * > input`);
+        console.log(elInputList);
+        for( let index = 0; index<elInputList.length; index++){
+            console.log(elInputList[index]);
+            elInputList[index].value = elInputList[index][`${elInputList[index].name}`] = "";
+            // instead of cleaning here another solution would be setting the state equal to whatever is in the input
+        }
+        
+        //inputEl.value = inputEl[`${inputEl.name}`] = "";
 
     }
 
@@ -153,6 +159,9 @@ class UserModal extends React.Component {
             // TODO fix error where state variable is cleaned but input in form is not
             this.props.changeModal("");
             // this.userModal();
+            this.clearInput("login");
+            this.clearInput("signup");
+            // instead of cleaning here another solution would be setting the state variables equal to whatever is in the input
             this.setState({
                 curUser: null, 
                 country: "",
