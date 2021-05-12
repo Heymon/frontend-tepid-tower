@@ -86,10 +86,10 @@ class RightSection extends React.Component {
         if (class_name === "user--modal--logged") {
             AuthModel.show().then(json => {
                 console.log(json);
-                if (json.field) {
-                    const form = document.querySelector(".signup");
-                    return form.appendChild(this.createErrorMessage(json.message));
-                }
+                // if (json.field) {
+                //     const form = document.querySelector(".signup");
+                //     return form.appendChild(this.createErrorMessage(json.message));
+                // }
                 this.setState({curUser: json.curUser });
             });
         }
@@ -104,8 +104,8 @@ class RightSection extends React.Component {
                 if (popUps[i].style.display === "flex") {
                     
                     popUps[i].style.display = "none";
-                    const error = document.querySelector(".error--message");
-                    if(error) error.remove();
+                    const responseMessage = document.querySelector(".message");
+                    if(responseMessage) responseMessage.remove();
                     // break
                 } else {
                     // console.log(popUps[i])
@@ -116,8 +116,8 @@ class RightSection extends React.Component {
                 // console.log(popUps[i])
                 // console.log(popUps[i].style.display)
                 popUps[i].style.display = "none";
-                const error = document.querySelector(".error--message");
-                if(error) error.remove();
+                const responseMessage = document.querySelector(".message");
+                if(responseMessage) responseMessage.remove();
             }
            
         }

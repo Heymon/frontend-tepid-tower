@@ -42,11 +42,11 @@ class UserModal extends React.Component {
         }
     }
 
-    createErrorMessage = (message) => {
-
+    createResponseMessage = (json) => {
+        console.log(json);
         let element = document.createElement("p");
-        element.appendChild(document.createTextNode(message));
-        element.setAttribute("class", "error--message");
+        element.appendChild(document.createTextNode(json.message));
+        element.setAttribute("class", `${json.type} message`);
         return element;
     }
 
@@ -84,11 +84,11 @@ class UserModal extends React.Component {
             delete form.curUser;
             AuthModel.register(form).then(json => {
                 console.log(json);
-                const error = document.querySelector(".error--message");
-                if(error) error.remove();
+                const responseMessage = document.querySelector(".message");
+                if(responseMessage) responseMessage.remove();
                 if (json.field) {
                     const form = document.querySelector(".signup");
-                    return form.appendChild(this.createErrorMessage(json.message));
+                    return form.appendChild(this.createResponseMessage(json));
                 }
             });
             this.setState({password: ""});
@@ -96,11 +96,11 @@ class UserModal extends React.Component {
         } else if(event.target.getAttribute("class")==="login"){
             AuthModel.login({email:this.state.email, password: this.state.password}).then(json => {
                 console.log(json);
-                const error = document.querySelector(".error--message");
-                if(error) error.remove();
+                const responseMessage = document.querySelector(".message");
+                if(responseMessage) responseMessage.remove();
                 if (json.field) {
                     const form = document.querySelector(".login");
-                    return form.appendChild(this.createErrorMessage(json.message));
+                    return form.appendChild(this.createResponseMessage(json));
                 }
 
                 this.setState({
@@ -128,18 +128,18 @@ class UserModal extends React.Component {
                 // return this.userModal("user--modal--logged");
             })
         } else if(event.target.getAttribute("class")==="edit--user"){
-            const error = document.querySelector(".error--message");
-            if(error) error.remove();
+            const responseMessage = document.querySelector(".message");
+            if(responseMessage) responseMessage.remove();
 
             if(this.state.curUser.profile.username === this.state.username && this.state.curUser.profile.country === this.state.country) {
                 const form = document.querySelector(".edit--user");
-                return form.appendChild(this.createErrorMessage("Profile has no changes."));
+                return form.appendChild(this.createResponseMessage({type:"error", message:"Profile has no changes."}));
             }
             AuthModel.edit({username: this.state.username, country: this.state.country}).then(json => {
                 console.log(json);
                 if (json.field) {
                     const form = document.querySelector(".edit--user");
-                    form.appendChild(this.createErrorMessage(json.message));
+                    form.appendChild(this.createResponseMessage(json));
                     if(json.status !== 200)return;
                 }
                 this.setState({
@@ -153,8 +153,8 @@ class UserModal extends React.Component {
         } else if(event.target.getAttribute("class")==="add--friend"){
             AuthModel.addFriend({friendEmail: this.state.friendEmail}).then(json => {
                 console.log(json);
-                const error = document.querySelector(".error--message");
-                if(error) error.remove();
+                const responseMessage = document.querySelector(".message");
+                if(responseMessage) responseMessage.remove();
 
                 if (json.field) {
                     if (json.status===200) {
@@ -166,7 +166,7 @@ class UserModal extends React.Component {
                         this.setState({friendEmail: ""})
                     }
                     const form = document.querySelector(".add--friend");
-                    return form.appendChild(this.createErrorMessage(json.message));
+                    return form.appendChild(this.createResponseMessage(json));
                 }
                 return
             })
@@ -191,7 +191,7 @@ class UserModal extends React.Component {
                 console.log(json);
                 if (json.field) {
                     const form = document.querySelector(".edit--user");
-                    return form.appendChild(this.createErrorMessage(json.message));
+                    return form.appendChild(this.createResponseMessage(json));
                 }
                 this.props.changeModal("");
                 // this.userModal();
