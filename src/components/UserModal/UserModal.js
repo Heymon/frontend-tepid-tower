@@ -50,13 +50,20 @@ class UserModal extends React.Component {
         return element;
     }
 
-    clearInput = (className) => {//it finds the input elements in the html and sets their input value to empty, so that it will match with the state variables
+    clearInput = (className, inputName) => {//it finds the input elements in the html and sets their input value to empty, so that it will match with the state variables
 
         // const inputEl = document.querySelector(`.${className} > * > input`);
         const elInputList = document.querySelectorAll(`.${className} > * > input`);
         console.log(elInputList);
         for( let index = 0; index<elInputList.length; index++){
             console.log(elInputList[index]);
+            if (inputName) {//for specific input
+                
+                if (elInputList[index].name === inputName) {
+                    elInputList[index].value = elInputList[index][`${elInputList[index].name}`] = "";
+                }
+                continue;
+            }
             elInputList[index].value = elInputList[index][`${elInputList[index].name}`] = "";
             // instead of cleaning here another solution would be setting the state equal to whatever is in the input
         }
@@ -85,6 +92,7 @@ class UserModal extends React.Component {
                 }
             });
             this.setState({password: ""});
+            this.clearInput("signup", "password");
         } else if(event.target.getAttribute("class")==="login"){
             AuthModel.login({email:this.state.email, password: this.state.password}).then(json => {
                 console.log(json);
@@ -101,6 +109,8 @@ class UserModal extends React.Component {
                     username: json.foundUser.profile.username,
                     password: ""
                 })
+                this.clearInput("login");
+                this.clearInput("signup");
                 localStorage.setItem("uid", json.signedJwt);
                 //DONE if is on gameOver add score and restart the game
                 if(!this.props.gameStatus && !this.props.isReseting) {
@@ -156,11 +166,10 @@ class UserModal extends React.Component {
             })
 
         }else if(event.target.classList.contains("logout")) {
-            // TODO fix error where state variable is cleaned but input in form is not
             this.props.changeModal("");
             // this.userModal();
-            this.clearInput("login");
-            this.clearInput("signup");
+            // this.clearInput("login");// just noticed i shouldnt clean when they go back but the moment they login
+            // this.clearInput("signup");
             // instead of cleaning here another solution would be setting the state variables equal to whatever is in the input
             this.setState({
                 curUser: null, 
