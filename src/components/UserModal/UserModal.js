@@ -127,14 +127,20 @@ class UserModal extends React.Component {
                 return this.props.changeModal("user--modal--logged");
                 // return this.userModal("user--modal--logged");
             })
-        } else if(event.target.getAttribute("class")==="edit--user"){//TODO fix error that same username already exists
+        } else if(event.target.getAttribute("class")==="edit--user"){
+            const error = document.querySelector(".error--message");
+            if(error) error.remove();
+
+            if(this.state.curUser.profile.username === this.state.username && this.state.curUser.profile.country === this.state.country) {
+                const form = document.querySelector(".edit--user");
+                return form.appendChild(this.createErrorMessage("Profile has no changes."));
+            }
             AuthModel.edit({username: this.state.username, country: this.state.country}).then(json => {
                 console.log(json);
-                const error = document.querySelector(".error--message");
-                if(error) error.remove();
                 if (json.field) {
                     const form = document.querySelector(".edit--user");
-                    return form.appendChild(this.createErrorMessage(json.message));
+                    form.appendChild(this.createErrorMessage(json.message));
+                    if(json.status !== 200)return;
                 }
                 this.setState({
                     curUser: json.updatedUser, 
