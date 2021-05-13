@@ -39,6 +39,13 @@ class UserModal extends React.Component {
                     this.setState({username: this.state.curUser.profile.username, country: this.state.curUser.profile.country})
                 }
             }
+
+            if (this.props.user) {
+                
+                if (this.props.user.profile.highscore !== this.state.curUser.profile.highscore) {
+                    this.setState({curUser: this.props.user});
+                }
+            }
         }
     }
 
@@ -117,6 +124,7 @@ class UserModal extends React.Component {
                     console.log(this.props.points);
                     AuthModel.addScore({score: this.props.points}).then(json => {
                         console.log(json);
+                        // this.setState({curUser: json.updatedUser});
                         return this.props.changeModal("user--modal--logged");
                         // return this.userModal("user--modal--logged");
                     });

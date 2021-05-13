@@ -59,7 +59,7 @@ class RightSection extends React.Component {
 
                     } else if(json.message === "highscore") {
 
-                        this.setState({highscore: true});
+                        this.setState({highscore: true, curUser: json.updatedUser});//i am only updating the user here because of the highscore display on the userModal
                         // this.userModal("gameover--modal");
                     }
                 })
