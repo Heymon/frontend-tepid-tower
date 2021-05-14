@@ -1,0 +1,69 @@
+.user--modal>.signup{
+
+    width: 50%;
+}
+
+.user--modal>.login{
+    width: 50%;
+}
+
+.user--modal--logged {
+    flex-wrap: wrap;
+
+}
+
+.user--modal--logged>div {
+    width: 65px;
+    margin: 100px 0 0 0;
+    height: 65px;
+}
+
+.edit--user {
+
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.edit--user>input {
+    
+    margin: 0 0 0 12px;
+}
+
+.add--friend {
+
+    width: 53%;
+    margin: 0 0px 0 -19px;
+}
+
+.add--friend>input {
+    
+    margin: 0 0 0 12px;
+}
+ 
+.user--modal>form {
+    display: flex;
+    flex-flow: column;
+}
+
+.user--modal input {
+    margin: 0 10px;
+}
+
+.signup div:first-child {
+    margin: 39px 0 23px 0;
+}
+
+.login div:first-child {
+    margin: 125px 0 23px 0;
+}
+
+.form--input {
+    display: flex;
+    flex-direction: column;
+    margin: 22px 0px;
+    padding: 0 10px;
+}
+
+button {
+    font-size: 1.5rem;
+}
