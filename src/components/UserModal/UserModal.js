@@ -159,10 +159,16 @@ class UserModal extends React.Component {
             })
 
         } else if(event.target.getAttribute("class")==="add--friend"){
+
+            const responseMessage = document.querySelector(".message");
+            if(responseMessage) responseMessage.remove();
+
+            if (this.state.friendEmail === this.state.curUser.email) {
+                const form = document.querySelector(".add--friend");
+                return form.appendChild(this.createResponseMessage({type:"error", message:"Please enter different email."}));
+            }
             AuthModel.addFriend({friendEmail: this.state.friendEmail}).then(json => {
                 console.log(json);
-                const responseMessage = document.querySelector(".message");
-                if(responseMessage) responseMessage.remove();
 
                 if (json.field) {
                     if (json.status===200) {
