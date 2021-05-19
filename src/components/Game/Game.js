@@ -421,7 +421,8 @@ class Game extends React.Component {
                 }
             }
         });
-        
+
+        /* commented testing no longer necessary
         // this is just for testing if press right click screen toggle going down
         document.addEventListener('contextmenu', () => {
             // console.log("desceu");
@@ -461,8 +462,57 @@ class Game extends React.Component {
                 this.setState({movementToggle: false});
             }
                     
-          });
+          }); */
 
+    }
+
+    handleHamburguerMenu = (event) =>{
+        event.stopPropagation();
+        console.log(event.target);
+        // console.log(window.getComputedStyle(event.target).display); this is how you get css value that are not declared inline or with javascript
+        // console.log(window.getComputedStyle(event.target).getPropertyValue('font-size')); or like this
+        // console.log(window.getComputedStyle(event.target));
+        
+        const hamburguerMenu = event.target.parentElement;
+        const hamburguerMenuCSS = window.getComputedStyle(hamburguerMenu);
+
+        console.log(hamburguerMenuCSS.display);
+
+        if(hamburguerMenuCSS.display === "block"){
+
+            hamburguerMenu.style.display = "none";
+
+            const elIconList = document.querySelectorAll(".icon");
+            console.log(elIconList);
+    
+            for (let index = 0; index < elIconList.length; index++) {
+                elIconList[index].style.display = "inline";
+            
+            }
+
+            document.body.addEventListener('touchstart', this.handleMenuOff);
+        } 
+
+    }
+
+    handleMenuOff = (event) =>{
+        // event.stopPropagation();
+        // console.log(event.target.nodeName);
+        const hamburguerMenu = document.querySelector(".hamburguer--menu");
+        if(event.target.nodeName !== "I"){
+
+            console.log(event.target);
+            const elIconList = document.querySelectorAll(".icon");
+            console.log(elIconList);
+            
+            for (let index = 0; index < elIconList.length; index++) {
+                elIconList[index].style.display = null;
+                
+            }
+            
+            hamburguerMenu.style.display = null;
+            document.body.removeEventListener('touchstart', this.handleMenuOff);
+        }
     }
 
     render(){
@@ -471,6 +521,7 @@ class Game extends React.Component {
             <GetGameState status={this.state.gameStatus} points={this.state.points}/>
             <Player playerInfo={this.state}/>
             <section className='game'>
+                <div className="hamburguer--menu" onTouchStart={this.handleHamburguerMenu} ><i class="fa fa-bars" ></i></div>
                 <DeathZone display={this.state.isScrolling}/>
                 <PlatformContainer status={this.state.gameStatus} curPlatform={(this.state.curPlatform ? this.state.curPlatform.getAttribute("id") : 0)} reset={this.props.reset}/>
             </section>
