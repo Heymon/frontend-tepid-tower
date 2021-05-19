@@ -6,7 +6,7 @@ function LeftSection() {
     return (
 
         <section className="left--section">
-            <h1>Tepid Tower</h1>
+            <h1 className="outTitle">Tepid Tower</h1>
         </section>   
     )
     

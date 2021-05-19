@@ -1,5 +1,6 @@
 import React from 'react';
 
+import './Platform.css'
 class Platform extends React.Component {
 
     state = {

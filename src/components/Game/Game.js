@@ -521,6 +521,7 @@ class Game extends React.Component {
             <GetGameState status={this.state.gameStatus} points={this.state.points}/>
             <Player playerInfo={this.state}/>
             <section className='game'>
+                <h1 className="inTitle">Tepid Tower</h1>
                 <div className="hamburguer--menu" onTouchStart={this.handleHamburguerMenu} ><i class="fa fa-bars" ></i></div>
                 <DeathZone display={this.state.isScrolling}/>
                 <PlatformContainer status={this.state.gameStatus} curPlatform={(this.state.curPlatform ? this.state.curPlatform.getAttribute("id") : 0)} reset={this.props.reset}/>
