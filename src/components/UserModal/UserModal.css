@@ -43,25 +43,26 @@
 .user--modal>form {
     display: flex;
     flex-flow: column;
+    margin: auto;
 }
 
 .user--modal input {
-    margin: 0 10px;
+    margin: 0 4%;
 }
 
-.signup div:first-child {
-    margin: 39px 0 23px 0;
+/* .signup div:first-child { not necessary right now
+    margin: 6% 0 6% 0;
 }
 
 .login div:first-child {
-    margin: 125px 0 23px 0;
-}
+    margin: 6% 0 6% 0;
+} */
 
 .form--input {
     display: flex;
     flex-direction: column;
-    margin: 22px 0px;
-    padding: 0 10px;
+    margin: 6% 0;
+    padding: 0 4%;
 }
 
 button {
