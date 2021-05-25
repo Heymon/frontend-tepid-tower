@@ -44,11 +44,15 @@ aside {
     position: absolute;
 
     background-color: brown;
-    width: 490px;
+    /* width: 490px;
     width: 48%;
-    /* width: 37%; */
     height: 50%;
-    margin: 13% 27% 0 0;
+    margin: 13% 27% 0 0; */
+
+    width: min(75vw, 500px);
+    height: 50vh;
+    /* margin: 13vh 13vw; */
+    margin: 13vh max(13vw, calc(calc(100vw - 500px) / 2));
 
     /* align-items: flex-start; */
     justify-content: space-evenly;
