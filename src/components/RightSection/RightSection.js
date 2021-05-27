@@ -199,7 +199,9 @@ class RightSection extends React.Component {
     }
 
     handleHamburguerMenu = (event) =>{
-        event.stopPropagation();
+        event.preventDefault();
+        // event.stopImmediatePropagation();
+        // event.stopPropagation();
         console.log(event.target);
         // console.log(window.getComputedStyle(event.target).display); this is how you get css value that are not declared inline or with javascript
         // console.log(window.getComputedStyle(event.target).getPropertyValue('font-size')); or like this
@@ -228,9 +230,9 @@ class RightSection extends React.Component {
     }
 
     handleMenuOff = (event) =>{
-        // event.stopPropagation();
         console.log(event.target.nodeName);
-        if(event.target.nodeName !== "I"){
+        console.log(event.target.closest(".modal")); //looks upper to find matching element; so if it is inside a modal
+        if(event.target.nodeName !== "I" && event.target.closest(".modal") === null){ // if it is not an icon and it is not inside a modal
             const hamburguerMenu = document.querySelector(".hamburguer--menu");
             
             this.userModal("");
