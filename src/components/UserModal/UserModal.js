@@ -68,6 +68,7 @@ class UserModal extends React.Component {
                 
                 if (elInputList[index].name === inputName) {
                     elInputList[index].value = elInputList[index][`${elInputList[index].name}`] = "";
+                    // TODO add break here so it doesnt go unnecessarly thru the whole loop
                 }
                 continue;
             }
@@ -339,11 +340,11 @@ class UserModal extends React.Component {
                     <form className="add--friend" onSubmit={this.handleSubmit}>
 
                         <div className="form--input">
-                            <h3>ADD A FRIEND TO YOUR FRIEND'S LIST</h3>
-                            <label>FRIEND's EMAIL</label>
+                            <h3>ADD A FRIEND TO YOUR FRIEND'S LEADERBOARD</h3>
                             <input
                             type="email"
                             name="friendEmail"
+                            placeholder="friend@mail.com"
                             required
                             onChange={e => this.setState({friendEmail: e.target.value})}
                             value={this.friendEmail}
@@ -352,10 +353,10 @@ class UserModal extends React.Component {
                         
                         <input type="submit" value="ADD A FRIEND" />
                     </form>
-
-                    <div className="delete icon" onClick={this.handleSubmit}><i className="delete fa fa-trash"></i></div>
-                    <div className="logout icon" onClick={this.handleSubmit}><i className="logout  fa fa-sign-out"></i></div>
-                    
+                    <div>
+                        <div className="delete icon" onClick={this.handleSubmit}><i className="delete fa fa-trash"></i></div>
+                        <div className="logout icon" onClick={this.handleSubmit}><i className="logout  fa fa-sign-out"></i></div>
+                    </div>
                 </div>
                 </>
 

@@ -1,3 +1,8 @@
+.user--modal--logged h2 {
+
+    margin: 20px 0 0 0;
+}
+
 .user--modal>.signup{
 
     width: 50%;
@@ -7,37 +12,59 @@
     width: 50%;
 }
 
+.user--modal {
+    height: fit-content;
+    min-height: 50vh;
+}
+
 .user--modal--logged {
     flex-wrap: wrap;
-
+    height: fit-content;
 }
 
 .user--modal--logged>div {
     width: 65px;
-    margin: 100px 0 0 0;
-    height: 65px;
+    margin: -13px 0 0 0;
+    /* height: 65px; */
 }
 
 .edit--user {
-
+    width: 100%;
     display: flex;
     flex-wrap: wrap;
 }
 
+.edit--user>div {
+    
+    width: min(36%, 159px);
+    max-height: 39px;
+}
+
 .edit--user>input {
     
-    margin: 0 0 0 12px;
+    height: fit-content;
+    margin: auto 10px;
 }
 
 .add--friend {
 
-    width: 53%;
-    margin: 0 0px 0 -19px;
+    width: 63%;
+    /* margin: 0 0 0 -17px; */
+}
+
+.add--friend>div {
+    
+    margin: 0 0 3% 0;
+}
+
+.add--friend h3 {
+    
+    margin: 4px 0;
 }
 
 .add--friend>input {
     
-    margin: 0 0 0 12px;
+    margin: 0 0 0 4%;
 }
  
 .user--modal>form {
@@ -68,3 +95,15 @@
 button {
     font-size: 1.5rem;
 }
+
+
+/* RESPONSES MESSAGES */
+
+.message {
+    width: 100%;
+    text-align: center;
+}
+
+/* .error {
+    color: red;
+} */
