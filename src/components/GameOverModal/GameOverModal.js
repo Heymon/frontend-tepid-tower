@@ -12,7 +12,7 @@ class GameOverModal extends React.Component {
 
                 {/* {(this.props.highscore === true ? "gameover--highscore--modal modal" : "gameover--score--modal modal" )} */}
                 <div>
-                    <h2>THE TOWER HAS YOU NOW</h2>
+                    <h2 className={"h2--title"}>THE TOWER HAS YOU NOW!</h2>
                     <div>
                         {(this.props.highscore === true ? <h3>HIGHSCORE: {this.props.points}</h3>: <h3>SCORE: {this.props.points}</h3> )}
                         <button className="playagain" onClick={this.props.playAgainFunc}>PLAY AGAIN</button>

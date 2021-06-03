@@ -15,3 +15,11 @@
     flex-flow: column;
     align-items: center;
 }
+
+.gameover--modal .h2--title{
+    margin: 0;
+}
+
+.gameover--modal h3 {
+    margin: 8px 0;
+}

@@ -82,7 +82,7 @@ class RightSection extends React.Component {
     userModal = (class_name) => {
         let isModalOn = false;
         const popUps = document.querySelectorAll(".modal");
-        // console.log(popUps);
+        // console.log(class_name);
 
         if (class_name === "user--modal--logged") {
             AuthModel.show().then(json => {
@@ -96,6 +96,7 @@ class RightSection extends React.Component {
         }
 
         for(let index = 0; index < popUps.length; index++){
+            // console.log(popUps[index])
             if (popUps[index].style.display === "flex") {
                 console.log("is on");
                 isModalOn = true;
@@ -120,7 +121,12 @@ class RightSection extends React.Component {
                     // console.log(popUps[i])
                     popUps[i].style.display = "flex";
                     //bool that check if there is a modal already up 
-                    if(!isModalOn) document.querySelector(".landing").addEventListener('click', this.handleMenuOff);
+                    if(!isModalOn && class_name !== "gameover--modal"){
+                        console.log("check");
+                        document.querySelector(".landing").addEventListener('click', this.handleMenuOff);
+                    } else if (isModalOn && class_name === "gameover--modal") { //trying to fix bug on modal login after gameover
+                        document.querySelector(".landing").removeEventListener('click', this.handleMenuOff);
+                    }
                 }
                 // break
             } else {
@@ -192,7 +198,7 @@ class RightSection extends React.Component {
         
         // if (event.target.getAttribute("class")==="playagain") { also dont need this
             this.setState({reset: true})
-            this.userModal("");
+            this.userModal("");/* this is the reason why login after gameover doesnt create a bug where there wouldnt be a event listener to click away; it takes away all modals which makes the call for logged--modal set a event listener*/
             console.log(this.state.reset)
         // }   
 
