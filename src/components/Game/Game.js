@@ -336,88 +336,92 @@ class Game extends React.Component {
 
         document.addEventListener('keydown', (e) => {
             // console.log(e.code);
-            if(e.code === "Space") {
-                e.preventDefault();//so that page doesnt scroll down
-                if (this.state.gauge === null) {//if gauge havent already started aka if the player isnt already holding the key down
-                    this.setState({gauge: setInterval(() => {// set the interval to increase the gauge every 250ms
-                        if (this.state.jumpGauge < 10) {
-                            this.setState(prevState => {
-                                return {
-                                    jumpGauge: prevState.jumpGauge + 1
-                                }
-                            })
+            if(document.activeElement.nodeName !== "INPUT"){//if an input is not on focus
+                if(e.code === "Space") {
+                    e.preventDefault();//so that page doesnt scroll down
+                    if (this.state.gauge === null) {//if gauge havent already started aka if the player isnt already holding the key down
+                        this.setState({gauge: setInterval(() => {// set the interval to increase the gauge every 250ms
+                            if (this.state.jumpGauge < 10) {
+                                this.setState(prevState => {
+                                    return {
+                                        jumpGauge: prevState.jumpGauge + 1
+                                    }
+                                })
+                            }
+                        }, 250)})
+                    }
+                } else if(e.code === "ArrowRight") {
+                        //get the right border of the playable area in screen location
+                        const rightBorder = (window.innerWidth/2) + (320/2);// half of the screen plus halfof the playable area
+                        // console.log(rightBorder);
+                        const curPos = this.getPlayerCurPos();
+                        // this is not working to well //couldnt figure out why; solution if they touch wall they die
+                        if( curPos.x + curPos.width >= rightBorder){//if the player reachs the border 
+                            console.log("should stop; down rightwalldeath");
+                            this.gameOver();
+                            // console.log("touch wall die") //start some event here to say game over
+                            this.stopMovement({x: rightBorder - curPos.width, y: this.state.playerTargetY}, 0);//stop them there and raise the flag on the rightborder
+                            
+                            
+                        } else {
+                            this.lateralMove(window.innerWidth);// start to move right
                         }
-                    }, 250)})
-                }
-            } else if(e.code === "ArrowRight") {
-                    //get the right border of the playable area in screen location
-                    const rightBorder = (window.innerWidth/2) + (320/2);// half of the screen plus halfof the playable area
-                    // console.log(rightBorder);
-                    const curPos = this.getPlayerCurPos();
-                    // this is not working to well //couldnt figure out why; solution if they touch wall they die
-                    if( curPos.x + curPos.width >= rightBorder){//if the player reachs the border 
-                        console.log("should stop; down rightwalldeath");
-                        this.gameOver();
-                        // console.log("touch wall die") //start some event here to say game over
-                        this.stopMovement({x: rightBorder - curPos.width, y: this.state.playerTargetY}, 0);//stop them there and raise the flag on the rightborder
-                        
-                        
-                    } else {
-                        this.lateralMove(window.innerWidth);// start to move right
-                    }
-            } else if(e.code === "ArrowLeft") {
-                    const leftBorder = (window.innerWidth/2) - (320/2);
-                    // console.log(leftBorder);
-                    const curPos = this.getPlayerCurPos();
-                    if (curPos.x <= leftBorder) {
-                        console.log("should stop; down leftwalldeath");
-                        this.gameOver();
-                        // console.log("touch wall die")// start some event here to say gameover
-                        this.stopMovement({x: leftBorder, y: this.state.playerTargetY}, 0);//stop them there and raise the flag on the leftborder
-                        
-                    } else {  
-                        this.lateralMove(0);// start to move left
-                    }
+                } else if(e.code === "ArrowLeft") {
+                        const leftBorder = (window.innerWidth/2) - (320/2);
+                        // console.log(leftBorder);
+                        const curPos = this.getPlayerCurPos();
+                        if (curPos.x <= leftBorder) {
+                            console.log("should stop; down leftwalldeath");
+                            this.gameOver();
+                            // console.log("touch wall die")// start some event here to say gameover
+                            this.stopMovement({x: leftBorder, y: this.state.playerTargetY}, 0);//stop them there and raise the flag on the leftborder
+                            
+                        } else {  
+                            this.lateralMove(0);// start to move left
+                        }
 
+                }
             }
         });
 
         document.addEventListener('keyup', (e) => {
             // console.log(e.code);
-            if(e.code === "Space") {//when they let go of space 
-                clearInterval(this.state.gauge);//stop the intervals and the gauge
-                this.jump(-840);//do the jump
-                this.setState({gauge: null, jumpGauge: 5})//set the gauge to initial value
-            } else if(e.code === "ArrowRight") {
+            if(document.activeElement.nodeName !== "INPUT"){//if an input is not on focus
+                if(e.code === "Space") {//when they let go of space 
+                    clearInterval(this.state.gauge);//stop the intervals and the gauge
+                    this.jump(-840);//do the jump
+                    this.setState({gauge: null, jumpGauge: 5})//set the gauge to initial value
+                } else if(e.code === "ArrowRight") {
+                    
+                    const rightBorder = (window.innerWidth/2) + (320/2);
+                    const curPos = this.getPlayerCurPos();
+                    if( curPos.x + curPos.width >= rightBorder){
+                        console.log("should stop; up rightwalldeath");
+                        this.gameOver();
+                        this.stopMovement({x: rightBorder - curPos.width, y: this.state.playerTargetY}, 0);
+
+                    } else {
+                        this.stopMovement(this.getPlayerCurPos());
+                    }
+                    if(this.state.playerFalling === true ){
+                        this.checkAllPlatforms();
+
+                    }
                 
-                const rightBorder = (window.innerWidth/2) + (320/2);
-                const curPos = this.getPlayerCurPos();
-                if( curPos.x + curPos.width >= rightBorder){
-                    console.log("should stop; up rightwalldeath");
-                    this.gameOver();
-                    this.stopMovement({x: rightBorder - curPos.width, y: this.state.playerTargetY}, 0);
+                } else if(e.code === "ArrowLeft") {
+                    const leftBorder = (window.innerWidth/2) - (320/2);
+                    const curPos = this.getPlayerCurPos();
+                    if (curPos.x <= leftBorder) {
+                        console.log("should stop; up lefttwalldeath");
+                        this.gameOver();
+                        return this.stopMovement({x: leftBorder, y: this.state.playerTargetY}, 0);
+                    }else {
+                        this.stopMovement(this.getPlayerCurPos());
+                    }
+                    if(this.state.playerFalling === true ){
+                        this.checkAllPlatforms();
 
-                } else {
-                    this.stopMovement(this.getPlayerCurPos());
-                }
-                if(this.state.playerFalling === true ){
-                    this.checkAllPlatforms();
-
-                }
-               
-            } else if(e.code === "ArrowLeft") {
-                const leftBorder = (window.innerWidth/2) - (320/2);
-                const curPos = this.getPlayerCurPos();
-                if (curPos.x <= leftBorder) {
-                    console.log("should stop; up lefttwalldeath");
-                    this.gameOver();
-                    return this.stopMovement({x: leftBorder, y: this.state.playerTargetY}, 0);
-                }else {
-                    this.stopMovement(this.getPlayerCurPos());
-                }
-                if(this.state.playerFalling === true ){
-                    this.checkAllPlatforms();
-
+                    }
                 }
             }
         });
