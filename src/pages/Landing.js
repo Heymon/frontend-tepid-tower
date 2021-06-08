@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import './Landing.css'
 
 import Game from '../components/Game/Game'
@@ -29,20 +29,7 @@ function Landing() {
     // });
     // const prevStatus = prevStatusRef.current;
 
-    // useEffect(function () {   
-    //     console.log(resetStatus, gameStatus)
-    //     // if (prevStatus !== gameStatus) {     
-    //         console.log("landing user")
-    //         // if(resetStatus) resetStatus = false
-    //         // if (localStorage.uid) {//if local storage already has a token
-    //         //     AuthModel.show().then(json => {//verify
-    //         //         setUser(json.curUser);//and set the global user state
-    //         //     });
-    //         // }
-    //     // }
-    //   }, [resetStatus]);
-
-      useEffect(function () {   
+      useEffect(function () {  
         console.log(gameStatus);
         if (localStorage.uid) {//if local storage already has a token
             AuthModel.show().then(json => {//verify
