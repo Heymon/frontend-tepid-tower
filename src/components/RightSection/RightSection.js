@@ -24,7 +24,7 @@ class RightSection extends React.Component {
     }
 
     componentDidMount() {
-        
+        document.querySelector(".hamburguer--menu").addEventListener('touchstart', this.handleHamburguerMenu);
     }
 
     componentDidUpdate(prevProps) {
@@ -80,8 +80,9 @@ class RightSection extends React.Component {
     }
 
     userModal = (class_name) => {
+        let isModalOn = false;
         const popUps = document.querySelectorAll(".modal");
-        // console.log(popUps);
+        // console.log(class_name);
 
         if (class_name === "user--modal--logged") {
             AuthModel.show().then(json => {
@@ -94,8 +95,15 @@ class RightSection extends React.Component {
             });
         }
 
-
-
+        for(let index = 0; index < popUps.length; index++){
+            // console.log(popUps[index])
+            if (popUps[index].style.display === "flex") {
+                console.log("is on");
+                isModalOn = true;
+                break;
+            }
+        }
+        console.log(class_name);
         for (let i = 0; i < popUps.length; i++) {
             if (popUps[i].classList.contains(class_name)) {
                 // console.log("true");
@@ -104,12 +112,21 @@ class RightSection extends React.Component {
                 if (popUps[i].style.display === "flex") {
                     
                     popUps[i].style.display = "none";
+                    console.log("off!");
+                    document.querySelector(".landing").removeEventListener('click', this.handleMenuOff);
                     const responseMessage = document.querySelector(".message");
                     if(responseMessage) responseMessage.remove();
                     // break
                 } else {
                     // console.log(popUps[i])
                     popUps[i].style.display = "flex";
+                    //bool that check if there is a modal already up 
+                    if(!isModalOn && class_name !== "gameover--modal"){
+                        console.log("check");
+                        document.querySelector(".landing").addEventListener('click', this.handleMenuOff);
+                    } else if (isModalOn && class_name === "gameover--modal") { //trying to fix bug on modal login after gameover
+                        document.querySelector(".landing").removeEventListener('click', this.handleMenuOff);
+                    }
                 }
                 // break
             } else {
@@ -181,10 +198,64 @@ class RightSection extends React.Component {
         
         // if (event.target.getAttribute("class")==="playagain") { also dont need this
             this.setState({reset: true})
-            this.userModal("");
+            this.userModal("");/* this is the reason why login after gameover doesnt create a bug where there wouldnt be a event listener to click away; it takes away all modals which makes the call for logged--modal set a event listener*/
             console.log(this.state.reset)
         // }   
 
+    }
+
+    handleHamburguerMenu = (event) =>{
+        event.preventDefault();
+        // event.stopImmediatePropagation();
+        // event.stopPropagation();
+        console.log(event.target);
+        // console.log(window.getComputedStyle(event.target).display); this is how you get css value that are not declared inline or with javascript
+        // console.log(window.getComputedStyle(event.target).getPropertyValue('font-size')); or like this
+        // console.log(window.getComputedStyle(event.target));
+        
+        const hamburguerMenu = event.target.parentElement;
+        const hamburguerMenuCSS = window.getComputedStyle(hamburguerMenu);
+
+        console.log(hamburguerMenuCSS.display);
+
+        if(hamburguerMenuCSS.display === "block"){
+
+            hamburguerMenu.style.display = "none";
+
+            const elIconList = document.querySelectorAll(".icon");
+            console.log(elIconList);
+    
+            for (let index = 0; index < elIconList.length; index++) {
+                elIconList[index].style.display = "inline";
+            
+            }
+            document.querySelector(".landing").addEventListener('click', this.handleMenuOff);
+            // document.body.addEventListener('touchstart', this.handleMenuOff);
+        } 
+
+    }
+
+    handleMenuOff = (event) =>{
+        console.log(event.target.nodeName);
+        console.log(event.target.closest(".modal")); //looks upper to find matching element; so if it is inside a modal
+        if(event.target.nodeName !== "I" && event.target.closest(".modal") === null){ // if it is not an icon and it is not inside a modal
+            const hamburguerMenu = document.querySelector(".hamburguer--menu");
+            
+            this.userModal("");
+            console.log(event.target);
+            const elIconList = document.querySelectorAll(".icon--menu");
+            console.log(elIconList);
+            
+            for (let index = 0; index < elIconList.length; index++) {
+                elIconList[index].style.display = null;
+                
+            }
+            
+            hamburguerMenu.style.display = null;
+            // document.body.removeEventListener('touchstart', this.handleMenuOff);
+            document.querySelector(".landing").removeEventListener('click', this.handleMenuOff);
+            console.log("off?");
+        }
     }
 
     render () {
@@ -192,12 +263,12 @@ class RightSection extends React.Component {
 
             <section className="section--right">
                 <aside className="aside--top">
-                    <div className="icon"><i className="fa fa-cog"></i></div>
-                    <div className="icon" onClick={this.handleLeaderboardOpt} ><i className="fa fa-trophy"></i></div>
-                    <div className="icon" onClick={this.handleControlsOpt} ><i className="fa fa-gamepad fa-lg"></i></div>
+                    <div className="icon icon--menu"><i className="fa fa-cog"></i></div>
+                    <div className="icon icon--menu" onClick={this.handleLeaderboardOpt} ><i className="fa fa-trophy"></i></div>
+                    <div className="icon icon--menu" onClick={this.handleControlsOpt} ><i className="fa fa-gamepad fa-lg"></i></div>
                 </aside>
                 <aside className="aside--bottom">
-                    <div className="icon" onClick={this.handleUserOpt}>
+                    <div className="icon icon--menu" onClick={this.handleUserOpt}>
                     <i className="fa fa-user"></i>
                     </div>
                 </aside>

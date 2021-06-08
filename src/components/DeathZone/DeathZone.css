@@ -1,4 +1,5 @@
 .deathzone {
+    z-index: 2;
     background-color: transparent;
     position: absolute;
     width: 320px;
