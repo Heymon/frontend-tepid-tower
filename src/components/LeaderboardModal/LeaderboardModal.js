@@ -19,9 +19,10 @@ function LeaderboardModal(props) {
         })
     }
 
-    useEffect(function () {
+    useEffect(function () {//TODO fix bug so that leadear board loads once the icon is clicked; as of now it only loads if the board is clicked
         getUsers()
-    }, [])
+        // console.log("load?");
+    },[])//here only loads once at mount
 
     function fetchBoard() {
         getUsers();
@@ -63,7 +64,7 @@ function LeaderboardModal(props) {
                             </colgroup>
                             <tbody>
                             {users.map((item, index) => {
-                                    return <tr>
+                                    return <tr key={`L${index}`}>
                                                 <td>{index+1}</td>
                                                 <td>{item.username}</td>
                                                 <td>{item.highscore}</td>
