@@ -71,6 +71,7 @@ class Game extends React.Component {
                             }
 
                             sensor.onerror = event => console.log(event.error.name, event.error.message);
+                            this.handleMobileMovement();
                         }
                     })
         } else {
@@ -364,6 +365,57 @@ class Game extends React.Component {
 
         // const playerEl = document.getElementById('player');
         // playerEl.style.display="block";
+
+    }
+
+    /* PLAYER MOVEMENT CONTROLLER METHODS */
+
+    handleMobileMovement = () => {
+
+        document.querySelector(".game").addEventListener('touchstart', (e) =>{
+
+            // e.preventDefault();
+            console.log(e.target.nodeName);
+
+            if (this.state.gauge === null && e.target.nodeName !== "I") {//if gauge havent already started aka if the player isnt already holding the key down
+                this.setState({gauge: setInterval(() => {// set the interval to increase the gauge every 250ms
+                    if (this.state.jumpGauge < 10) {
+                        this.setState(prevState => {
+                            return {
+                                jumpGauge: prevState.jumpGauge + 1
+                            }
+                        })
+                    }
+                }, 250)})
+            }
+
+        });
+
+        
+        document.querySelector(".game").addEventListener('touchend', (e) =>{
+
+            console.log(e);
+            if (e.target.nodeName !== "I") {
+                
+                clearInterval(this.state.gauge);//stop the intervals and the gauge
+                this.jump(-840);//do the jump
+                this.setState({gauge: null, jumpGauge: 5})//set the gauge to initial value
+            }
+            
+
+        });
+        
+        document.querySelector(".game").addEventListener('touchmove', (e) =>{// so that the page wont scroll while holding for jump
+
+            
+            e.preventDefault();
+            // if (e.target.nodeName !== "I") {
+            //     console.log(e);
+            // }
+
+
+        });
+
 
     }
 
