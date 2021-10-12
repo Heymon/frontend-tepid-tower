@@ -13,6 +13,6 @@ class LeaderboardModel {
         }).then(response => response.json());
 
     };
-}
+}//TODO create rejection handler for when fetch doesnt work
 
 export default LeaderboardModel;

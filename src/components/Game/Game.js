@@ -1,5 +1,5 @@
 import React from "react";
-import {RelativeOrientationSensor} from "motion-sensors-polyfill";
+import {AbsoluteOrientationSensor} from "motion-sensors-polyfill";
 
 import './Game.css'
 
@@ -35,9 +35,9 @@ class Game extends React.Component {
 
         points:0,
 
-        // testing
+        //for testing
         movementToggle: false,
-        movementFunc: 0
+        movementFunc: 0,
 
     }
 
@@ -48,24 +48,120 @@ class Game extends React.Component {
         (function(a){if(/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows ce|xda|xiino/i.test(a)||/1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test(a.substr(0,4))) check = true;})(navigator.userAgent||navigator.vendor||window.opera);
         return check;
       };
+    
+    /** 
+     * source https://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles
+     * 
+      */
+    quaternionToEuler = (quaternion) => {
+        // let eulerAngles = [];
+        let roll = 0;
+        let pitch = 0;
+        let yaw = 0;
+
+        // roll (x-axis rotation)
+        let sinr_cosp = 2 * (quaternion[3] * quaternion[0] + quaternion[1] * quaternion[2]);
+        let cosr_cosp = 1 - 2 * (quaternion[0] * quaternion[0] + quaternion[1] * quaternion[1]);
+        roll = Math.atan2(sinr_cosp, cosr_cosp);
+
+        // pitch (y-axis rotation)
+        let sinp = 2 * (quaternion[3] * quaternion[1] - quaternion[2] * quaternion[0]);
+        if (Math.abs(sinp) >= 1){
+
+            pitch = ((Math.PI/2)*Math.sign(sinp)); // use 90 degrees if out of range
+        }
+        else{
+
+            pitch = Math.asin(sinp);
+        }
+
+        // yaw (z-axis rotation)
+        let siny_cosp = 2 * (quaternion[3] * quaternion[2] + quaternion[0] * quaternion[1]);
+        let cosy_cosp = 1 - 2 * (quaternion[1] * quaternion[1] + quaternion[2] * quaternion[2]);
+        yaw = Math.atan2(siny_cosp, cosy_cosp);
+
+        console.log(`roll ${roll.toFixed(3)} pitch ${pitch.toFixed(3)} yaw ${yaw.toFixed(3)}`);
+
+        return pitch.toFixed(3);
+    }
 
     /* LIFECYCLE COMPONENT METHODS */
 
     componentDidMount () {
         if(this.mobileCheck()){
             // from https://developer.mozilla.org/en-US/docs/Web/API/RelativeOrientationSensor
-            Promise.all([navigator.permissions.query({ name: "gyroscope"}), 
+            Promise.all([navigator.permissions.query({ name: "accelerometer"}), 
                         navigator.permissions.query({ name: "gyroscope"})])
                     .then(results => {
                         if (results.every(result => result.state === "granted")) {
                             console.log('Permission to use Accelerometer & Gyroscope sensor granted.');
 
-                            let sensor = new RelativeOrientationSensor({frequency: 0.5});
+                            let sensor = new AbsoluteOrientationSensor({frequency: 30, referenceFrame: 'device'});
 
                             sensor.start();
 
-                            sensor.onreading = () => {
-                                console.log("Relative orientaion on z-axis " + sensor.quaternion[3]);//more tha 45 ->  less than 35 <-
+                            sensor.onreading = () => {//NOTE maybe use roll to check if it is to backwards or not
+                                // if (!this.state.isInitQuaternionSet) this.setState({initialQuaternion: sensor.quaternion.map(x => x.toFixed(3)), isInitQuaternionSet: true})
+                                // console.log("Relative orientaion " + sensor.quaternion.map(x => x.toFixed(3)));//more tha 45 ->  less than 35 <-
+                                let pitch = this.quaternionToEuler(sensor.quaternion);
+                                // console.log(`intial ${this.state.initialQuaternion[1]}`);
+                                // console.log(`current ${sensor.quaternion[1]}`);
+                                // if(Math.abs(sensor.quaternion[1]) - Math.abs(this.state.initialQuaternion[1]) <= -0.05){
+                                // let stop = (pitch >= -0.3 && pitch <= 0.3) ? true : false;
+                                // console.log("heyyyyyyyyyyy ",stop)
+                                if((pitch >= -0.3 && pitch <= 0.3)){//TODO after adding a recoil state for isModalOn check to stop movement
+                                    
+                                    const rightBorder = (window.innerWidth/2) + (320/2);
+                                    const leftBorder = (window.innerWidth/2) - (320/2);
+                                    const curPos = this.getPlayerCurPos();
+                                    if( curPos.x + curPos.width >= rightBorder || curPos.x <= leftBorder){
+                                        console.log("should stop; up rightwalldeath");
+                                        this.gameOver();
+                                        this.stopMovement({x: rightBorder - curPos.width, y: this.state.playerTargetY}, 0);
+
+                                    } else {
+                                        this.stopMovement(this.getPlayerCurPos());
+                                    }
+                                    if(this.state.playerFalling === true ){
+                                        this.checkAllPlatforms();
+
+                                    }
+
+                                // } else if(Math.abs(sensor.quaternion[1]) - Math.abs(this.state.initialQuaternion[1]) >= 0.05) {
+                                } else if(pitch > 0.3){
+                                    // console.log("Relative orientaion pointing right");//more tha 45 ->  less than 35 <-
+                                    //get the right border of the playable area in screen location
+                                    const rightBorder = (window.innerWidth/2) + (320/2);// half of the screen plus halfof the playable area
+                                    // console.log(rightBorder);
+                                    const curPos = this.getPlayerCurPos();
+                                    // this is not working to well //couldnt figure out why; solution if they touch wall they die
+                                    if( curPos.x + curPos.width >= rightBorder){//if the player reachs the border 
+                                        console.log("should stop; down rightwalldeath");
+                                        this.gameOver();
+                                        // console.log("touch wall die") //start some event here to say game over
+                                        this.stopMovement({x: rightBorder - curPos.width, y: this.state.playerTargetY}, 0);//stop them there and raise the flag on the rightborder
+                                        
+                                        
+                                    } else {
+                                        console.log("it did");
+                                        this.lateralMove(window.innerWidth);// start to move right
+                                    }
+                                } else if(pitch < -0.3) {
+                                    // console.log("Relative orientaion pointing left");//more tha 45 ->  less than 35 <-
+                                    const leftBorder = (window.innerWidth/2) - (320/2);
+                                    // console.log(leftBorder);
+                                    const curPos = this.getPlayerCurPos();
+                                    if (curPos.x <= leftBorder) {
+                                        console.log("should stop; down leftwalldeath");
+                                        this.gameOver();
+                                        // console.log("touch wall die")// start some event here to say gameover
+                                        this.stopMovement({x: leftBorder, y: this.state.playerTargetY}, 0);//stop them there and raise the flag on the leftborder
+                                        
+                                    } else {  
+                                        this.lateralMove(0);// start to move left
+                                    }
+                
+                                }
                                 
             
                             }
@@ -89,7 +185,7 @@ class Game extends React.Component {
     }
 
     componentDidUpdate (prevState, prevProps) {
-        console.log("testingsorry");
+        console.warn("testingsorry");
         console.log(this.props.reset);
         if(this.props.reset) {
             console.log("reset");
@@ -99,7 +195,7 @@ class Game extends React.Component {
         
         if (this.state.isScrolling) {
             const playerCurPos = this.getPlayerCurPos();
-            if (playerCurPos.y + playerCurPos.height >= window.innerHeight - 25) {
+            if (playerCurPos.y + playerCurPos.height >= window.innerHeight - 25) {//NOTE maybe in the future instead of this create a event for when the animation ends, i.e when the animation ends at the bottom or when the animaton ends at the side wall (on phone the side wall is the playerTargetX)
                 console.log("should stop; didupdate bottomdeath");
                 return this.gameOver()
             }
@@ -152,6 +248,7 @@ class Game extends React.Component {
     // they way movement works is by setting the target at either far right or far left on key down
     //then on key up set the target to the players current position making them stop
     lateralMove = (movementTarget) => {
+        console.log("how many times");
         this.setState({playerTargetX: movementTarget, speed: 1.5})
     }
 
@@ -191,6 +288,7 @@ class Game extends React.Component {
                         console.log("did land1")
                         this.setState({playerJumping: false, playerFalling: false, playerLanded: true, curPlatform, speed: 1.5});
                         if (curPlatform.getAttribute("id") > 2 && !this.state.isScrolling) {
+                            console.log(curPlatform); // FIXME TODO Bug 5 : very specific, not consistent; scrolling starts after first jump because checklanding matches a platform that is higher than player but that player is within platform width; normally only happens if jump is pressed before lateral movement 
                             this.startScrolling();
                         }
                     }else {
@@ -220,7 +318,7 @@ class Game extends React.Component {
         // console.log(playerCurPos.x < platformPos.right);
         // console.log(playerCurPos.x + playerCurPos.width > platformPos.left );
         // console.log(playerCurPos.x + playerCurPos.width < platformPos.right);
-        if ((playerCurPos.y + playerCurPos.height) <= platformPos.y) {//if the player is above the platform
+        if ((playerCurPos.y + playerCurPos.height) <= platformPos.y) {//if the player is above the platform FIXME TODO Bug 5: this is where i assume the error is happening
             //and the player is within the platform space
             if ((
                 playerCurPos.x > platformPos.left &&     
@@ -237,7 +335,7 @@ class Game extends React.Component {
                     // console.log("faster" + distance);
                     // this.setState({playerTargetY: landPos, speed: (distance < 30 ? 0.5 : 0.75 ), curPlatform: platformEl, playerFalling: true, playerJumping: false});
                     // this.setState({playerTargetX: playerCurPos.x, playerTargetY: landPos, speed: ((distance/100)+0.1), playerFalling: true, playerJumping: false});
-                    this.setState({playerTargetX: playerCurPos.x, playerTargetY: landPos, speed: (0.2), playerFalling: true, playerJumping: false});
+                    this.setState({playerTargetX: playerCurPos.x, playerTargetY: landPos, speed: (0.2), playerFalling: true, playerJumping: false});//FIXME bug on phone the velocity is not enough for when scrolling so player never reachs platform
                     return platformEl
                 }//if not just land normally
                 this.setState({playerTargetY: landPos, curPlatform: platformEl, speed: 1.0, playerFalling: true, playerJumping: false})

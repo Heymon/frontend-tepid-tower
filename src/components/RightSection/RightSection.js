@@ -95,7 +95,7 @@ class RightSection extends React.Component {
             });
         }
 
-        for(let index = 0; index < popUps.length; index++){
+        for(let index = 0; index < popUps.length; index++){//NOTE if i make isModal part of the state and set it when a popup comes on I can remove this for loop
             // console.log(popUps[index])
             if (popUps[index].style.display === "flex") {
                 console.log("is on");
@@ -218,7 +218,7 @@ class RightSection extends React.Component {
 
         console.log(hamburguerMenuCSS.display);
 
-        if(hamburguerMenuCSS.display === "block"){
+        if(hamburguerMenuCSS.display === "block"){//FIXME check if gamover modal is on display to disable the menu
 
             hamburguerMenu.style.display = "none";
 
