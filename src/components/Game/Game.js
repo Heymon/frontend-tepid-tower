@@ -80,7 +80,7 @@ class Game extends React.Component {
         let cosy_cosp = 1 - 2 * (quaternion[1] * quaternion[1] + quaternion[2] * quaternion[2]);
         yaw = Math.atan2(siny_cosp, cosy_cosp);
 
-        console.log(`roll ${roll.toFixed(3)} pitch ${pitch.toFixed(3)} yaw ${yaw.toFixed(3)}`);
+        // console.log(`roll ${roll.toFixed(3)} pitch ${pitch.toFixed(3)} yaw ${yaw.toFixed(3)}`);
 
         return pitch.toFixed(3);
     }
@@ -111,7 +111,7 @@ class Game extends React.Component {
                                 // console.log("heyyyyyyyyyyy ",stop)
                                 if((pitch >= -0.3 && pitch <= 0.3)){//TODO after adding a recoil state for isModalOn check to stop movement
                                     
-                                    const rightBorder = (window.innerWidth/2) + (320/2);
+                                    /* const rightBorder = (window.innerWidth/2) + (320/2);
                                     const leftBorder = (window.innerWidth/2) - (320/2);
                                     const curPos = this.getPlayerCurPos();
                                     if( curPos.x + curPos.width >= rightBorder || curPos.x <= leftBorder){
@@ -125,49 +125,29 @@ class Game extends React.Component {
                                     if(this.state.playerFalling === true ){
                                         this.checkAllPlatforms();
 
+                                    } */
+
+                                    if (this.state.playerTargetX === window.innerWidth) {
+                                        this.controllerMovementRight(false);
+                                        return;
+                                    }
+                                    if (this.state.playerTargetX === 0) {
+                                        this.controllerMovementRight(false);
+                                        return;
                                     }
 
                                 // } else if(Math.abs(sensor.quaternion[1]) - Math.abs(this.state.initialQuaternion[1]) >= 0.05) {
                                 } else if(pitch > 0.3){
                                     // console.log("Relative orientaion pointing right");//more tha 45 ->  less than 35 <-
-                                    //get the right border of the playable area in screen location
-                                    const rightBorder = (window.innerWidth/2) + (320/2);// half of the screen plus halfof the playable area
-                                    // console.log(rightBorder);
-                                    const curPos = this.getPlayerCurPos();
-                                    // this is not working to well //couldnt figure out why; solution if they touch wall they die
-                                    if( curPos.x + curPos.width >= rightBorder){//if the player reachs the border 
-                                        console.log("should stop; down rightwalldeath");
-                                        this.gameOver();
-                                        // console.log("touch wall die") //start some event here to say game over
-                                        this.stopMovement({x: rightBorder - curPos.width, y: this.state.playerTargetY}, 0);//stop them there and raise the flag on the rightborder
-                                        
-                                        
-                                    } else {
-                                        console.log("it did");
-                                        this.lateralMove(window.innerWidth);// start to move right
-                                    }
+                                    this.controllerMovementRight(true);
                                 } else if(pitch < -0.3) {
                                     // console.log("Relative orientaion pointing left");//more tha 45 ->  less than 35 <-
-                                    const leftBorder = (window.innerWidth/2) - (320/2);
-                                    // console.log(leftBorder);
-                                    const curPos = this.getPlayerCurPos();
-                                    if (curPos.x <= leftBorder) {
-                                        console.log("should stop; down leftwalldeath");
-                                        this.gameOver();
-                                        // console.log("touch wall die")// start some event here to say gameover
-                                        this.stopMovement({x: leftBorder, y: this.state.playerTargetY}, 0);//stop them there and raise the flag on the leftborder
-                                        
-                                    } else {  
-                                        this.lateralMove(0);// start to move left
-                                    }
-                
-                                }
-                                
-            
+                                    this.controllerMovementLeft(true);
+                                }  
                             }
 
                             sensor.onerror = event => console.log(event.error.name, event.error.message);
-                            this.handleMobileMovement();
+                            this.handleMobileJump();
                         }
                     })
         } else {
@@ -260,7 +240,7 @@ class Game extends React.Component {
     // then similar to lateral movement the jump sets the target to a distance equivalent to the top of the screen
     //(in this case 840px so if the player is at a platform the jump will be set at -840 from that position) and
     // starts a timeout with the duration being multiplied by the gauge set on keydown so
-    // that instead of reaching the top of the screen when the timeout runs the procese of falling starts
+    // that instead of reaching the top of the screen when the timeout runs the process of falling starts
     jump = (amount) => {
         // if not jumping or in the ground
         if (this.state.playerJumping === false && this.state.playerLanded === true) {
@@ -280,7 +260,7 @@ class Game extends React.Component {
     }
 
     //sets event Listener to confirm the landing
-    land = (curPlatform) => {
+    land = (curPlatform) => {//TODO add a check so that if there is already a event remove before adding the new one
         const playerEl = document.getElementById('player');
                 playerEl.addEventListener('transitionend', () => {
                     console.log("touchedfloorDown");
@@ -360,7 +340,7 @@ class Game extends React.Component {
         }
         if (!isLandingOnPlatform) {//if it didnt found a platform set landing to ground
             const playerCurPos = this.getPlayerCurPos();
-            const towerBottom = window.innerHeight - playerCurPos.width;
+            const towerBottom = window.innerHeight - playerCurPos.width;//NOTE i belive this is suppose to be .height
             const distance = towerBottom - playerCurPos.y;
             if (distance < 100) {// if the distance between the player and where he is landing is small increase the veloctiy of landing
                 console.log("faster" + distance);
@@ -468,56 +448,105 @@ class Game extends React.Component {
 
     /* PLAYER MOVEMENT CONTROLLER METHODS */
 
-    handleMobileMovement = () => {
+    controllerJump = (isBeginningPress) => {
+        if (isBeginningPress) {
+            this.setState({gauge: setInterval(() => {// set the interval to increase the gauge every 250ms
+                if (this.state.jumpGauge < 10) {
+                    this.setState(prevState => {
+                        return {
+                            jumpGauge: prevState.jumpGauge + 1
+                        }
+                    })
+                }
+            }, 250)})
+        }else {
+            clearInterval(this.state.gauge);//stop the intervals and the gauge
+            this.jump(-840);//do the jump
+            this.setState({gauge: null, jumpGauge: 5})//set the gauge to initial value
+        }
+    }
 
-        document.querySelector(".game").addEventListener('touchstart', (e) =>{
-
-            // e.preventDefault();
-            console.log(e.target.nodeName);
-
-            if (this.state.gauge === null && e.target.nodeName !== "I") {//if gauge havent already started aka if the player isnt already holding the key down
-                this.setState({gauge: setInterval(() => {// set the interval to increase the gauge every 250ms
-                    if (this.state.jumpGauge < 10) {
-                        this.setState(prevState => {
-                            return {
-                                jumpGauge: prevState.jumpGauge + 1
-                            }
-                        })
-                    }
-                }, 250)})
+    controllerMovementRight = (isBeginningPress) => {
+        if (isBeginningPress) {
+            //get the right border of the playable area in screen location
+            const rightBorder = (window.innerWidth/2) + (320/2);// half of the screen plus halfof the playable area
+            const curPos = this.getPlayerCurPos();
+            // this is not working to well //couldnt figure out why; solution if they touch wall they die
+            if( curPos.x + curPos.width >= rightBorder){//if the player reachs the border 
+                console.log("should stop; down rightwalldeath");
+                this.gameOver();
+                this.stopMovement({x: rightBorder - curPos.width, y: this.state.playerTargetY}, 0);//stop them there and raise the flag on the rightborder
+            } else {
+                this.lateralMove(window.innerWidth);// start to move right
+                //FIXME bug number 6: where if player is holding the right or left key when landing on platform it doesnt check for landing and goes through it; adding this.land here might be the solution but it also lands player prematurely 
             }
-
-        });
-
-        
-        document.querySelector(".game").addEventListener('touchend', (e) =>{
-
-            console.log(e);
-            if (e.target.nodeName !== "I") {
-                
-                clearInterval(this.state.gauge);//stop the intervals and the gauge
-                this.jump(-840);//do the jump
-                this.setState({gauge: null, jumpGauge: 5})//set the gauge to initial value
+        }else {
+            const rightBorder = (window.innerWidth/2) + (320/2);
+            const curPos = this.getPlayerCurPos();
+            if( curPos.x + curPos.width >= rightBorder){
+                console.log("should stop; up rightwalldeath");
+                this.gameOver();
+                this.stopMovement({x: rightBorder - curPos.width, y: this.state.playerTargetY}, 0);
+            } else {
+                this.stopMovement(this.getPlayerCurPos());
             }
-            
-
-        });
-        
-        document.querySelector(".game").addEventListener('touchmove', (e) =>{// so that the page wont scroll while holding for jump
-
-            
-            e.preventDefault();
-            // if (e.target.nodeName !== "I") {
-            //     console.log(e);
-            // }
-
-
-        });
-
+            if(this.state.playerFalling === true ){
+                this.land(this.checkAllPlatforms());//NOTE i believe adding this.land here and on the left will be the fix to bug 5
+            }
+        }
+    }
+    
+    controllerMovementLeft = (isBeginningPress) => {
+        if (isBeginningPress) {
+            const leftBorder = (window.innerWidth/2) - (320/2);
+            // console.log(leftBorder);
+            const curPos = this.getPlayerCurPos();
+            if (curPos.x <= leftBorder) {
+                console.log("should stop; down leftwalldeath");
+                this.gameOver();
+                // console.log("touch wall die")// start some event here to say gameover
+                this.stopMovement({x: leftBorder, y: this.state.playerTargetY}, 0);//stop them there and raise the flag on the leftborder  
+            } else {  
+                this.lateralMove(0);// start to move left
+            }      
+        }else {
+            const leftBorder = (window.innerWidth/2) - (320/2);
+            const curPos = this.getPlayerCurPos();
+            if (curPos.x <= leftBorder) {
+                console.log("should stop; up lefttwalldeath");
+                this.gameOver();
+                return this.stopMovement({x: leftBorder, y: this.state.playerTargetY}, 0);
+            }else {
+                this.stopMovement(this.getPlayerCurPos());
+            }
+            if(this.state.playerFalling === true ){
+                this.land(this.checkAllPlatforms());
+            }
+        }
 
     }
 
     /* EVENT LISTENERS */
+
+    handleMobileJump = () => {
+
+        document.querySelector(".game").addEventListener('touchstart', (e) =>{
+            if (this.state.gauge === null && e.target.nodeName !== "I") {//if gauge havent already started aka if the player isnt already holding the key down
+                this.controllerJump(true);
+            }
+        });
+ 
+        document.querySelector(".game").addEventListener('touchend', (e) =>{
+            console.log(e);
+            if (e.target.nodeName !== "I") {//if player is not pressing one of the icons
+                this.controllerJump(false);
+            }
+        });
+        
+        document.querySelector(".game").addEventListener('touchmove', (e) =>{// so that the page wont scroll while holding for jump 
+            e.preventDefault();
+        });
+    }
 
     handleKeyboardMovement = () => {
 
@@ -527,46 +556,12 @@ class Game extends React.Component {
                 if(e.code === "Space") {
                     e.preventDefault();//so that page doesnt scroll down
                     if (this.state.gauge === null) {//if gauge havent already started aka if the player isnt already holding the key down
-                        this.setState({gauge: setInterval(() => {// set the interval to increase the gauge every 250ms
-                            if (this.state.jumpGauge < 10) {
-                                this.setState(prevState => {
-                                    return {
-                                        jumpGauge: prevState.jumpGauge + 1
-                                    }
-                                })
-                            }
-                        }, 250)})
+                        this.controllerJump(true);
                     }
                 } else if(e.code === "ArrowRight") {
-                        //get the right border of the playable area in screen location
-                        const rightBorder = (window.innerWidth/2) + (320/2);// half of the screen plus halfof the playable area
-                        // console.log(rightBorder);
-                        const curPos = this.getPlayerCurPos();
-                        // this is not working to well //couldnt figure out why; solution if they touch wall they die
-                        if( curPos.x + curPos.width >= rightBorder){//if the player reachs the border 
-                            console.log("should stop; down rightwalldeath");
-                            this.gameOver();
-                            // console.log("touch wall die") //start some event here to say game over
-                            this.stopMovement({x: rightBorder - curPos.width, y: this.state.playerTargetY}, 0);//stop them there and raise the flag on the rightborder
-                            
-                            
-                        } else {
-                            this.lateralMove(window.innerWidth);// start to move right
-                        }
+                    this.controllerMovementRight(true);
                 } else if(e.code === "ArrowLeft") {
-                        const leftBorder = (window.innerWidth/2) - (320/2);
-                        // console.log(leftBorder);
-                        const curPos = this.getPlayerCurPos();
-                        if (curPos.x <= leftBorder) {
-                            console.log("should stop; down leftwalldeath");
-                            this.gameOver();
-                            // console.log("touch wall die")// start some event here to say gameover
-                            this.stopMovement({x: leftBorder, y: this.state.playerTargetY}, 0);//stop them there and raise the flag on the leftborder
-                            
-                        } else {  
-                            this.lateralMove(0);// start to move left
-                        }
-
+                    this.controllerMovementLeft(true);
                 }
             }
         });
@@ -575,40 +570,11 @@ class Game extends React.Component {
             // console.log(e.code);
             if(document.activeElement.nodeName !== "INPUT"){//if an input is not on focus
                 if(e.code === "Space") {//when they let go of space 
-                    clearInterval(this.state.gauge);//stop the intervals and the gauge
-                    this.jump(-840);//do the jump
-                    this.setState({gauge: null, jumpGauge: 5})//set the gauge to initial value
+                    this.controllerJump(false);
                 } else if(e.code === "ArrowRight") {
-                    
-                    const rightBorder = (window.innerWidth/2) + (320/2);
-                    const curPos = this.getPlayerCurPos();
-                    if( curPos.x + curPos.width >= rightBorder){
-                        console.log("should stop; up rightwalldeath");
-                        this.gameOver();
-                        this.stopMovement({x: rightBorder - curPos.width, y: this.state.playerTargetY}, 0);
-
-                    } else {
-                        this.stopMovement(this.getPlayerCurPos());
-                    }
-                    if(this.state.playerFalling === true ){
-                        this.checkAllPlatforms();
-
-                    }
-                
+                    this.controllerMovementRight(false);
                 } else if(e.code === "ArrowLeft") {
-                    const leftBorder = (window.innerWidth/2) - (320/2);
-                    const curPos = this.getPlayerCurPos();
-                    if (curPos.x <= leftBorder) {
-                        console.log("should stop; up lefttwalldeath");
-                        this.gameOver();
-                        return this.stopMovement({x: leftBorder, y: this.state.playerTargetY}, 0);
-                    }else {
-                        this.stopMovement(this.getPlayerCurPos());
-                    }
-                    if(this.state.playerFalling === true ){
-                        this.checkAllPlatforms();
-
-                    }
+                    this.controllerMovementLeft(false);
                 }
             }
         });
