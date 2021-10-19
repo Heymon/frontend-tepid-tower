@@ -184,8 +184,8 @@ class Game extends React.Component {
 
         // console.log("update");
 
-        if(this.state.speed <= 0.2) {//if the speed was increase for fixing position
-            
+        if(this.state.speed <= 0.2) {//if the speed was increase for fixing position//NOTE this might be the reason why the speed is not picking up on mobile so if instead we create a listener for when the faster animation is over to sow down again that might work
+            console.log("slowing");
             if(prevState.playerTargetX === window.innerWidth || prevState.playerTargetX === 0){// and the player was moving 
                 this.setState({speed: 1.5, playerTargetX: prevState.playerTargetX})//set the movement back to normal
             }
@@ -268,7 +268,7 @@ class Game extends React.Component {
                         console.log("did land1")
                         this.setState({playerJumping: false, playerFalling: false, playerLanded: true, curPlatform, speed: 1.5});
                         if (curPlatform.getAttribute("id") > 2 && !this.state.isScrolling) {
-                            console.log(curPlatform); // FIXME TODO Bug 5 : very specific, not consistent; scrolling starts after first jump because checklanding matches a platform that is higher than player but that player is within platform width; normally only happens if jump is pressed before lateral movement 
+                            console.log(curPlatform); 
                             this.startScrolling();
                         }
                     }else {
@@ -298,7 +298,7 @@ class Game extends React.Component {
         // console.log(playerCurPos.x < platformPos.right);
         // console.log(playerCurPos.x + playerCurPos.width > platformPos.left );
         // console.log(playerCurPos.x + playerCurPos.width < platformPos.right);
-        if ((playerCurPos.y + playerCurPos.height) <= platformPos.y) {//if the player is above the platform FIXME TODO Bug 5: this is where i assume the error is happening
+        if ((playerCurPos.y + playerCurPos.height) <= platformPos.y) {//if the player is above the platform
             //and the player is within the platform space
             if ((
                 playerCurPos.x > platformPos.left &&     
@@ -340,7 +340,7 @@ class Game extends React.Component {
         }
         if (!isLandingOnPlatform) {//if it didnt found a platform set landing to ground
             const playerCurPos = this.getPlayerCurPos();
-            const towerBottom = window.innerHeight - playerCurPos.width;//NOTE i belive this is suppose to be .height
+            const towerBottom = window.innerHeight - playerCurPos.height;
             const distance = towerBottom - playerCurPos.y;
             if (distance < 100) {// if the distance between the player and where he is landing is small increase the veloctiy of landing
                 console.log("faster" + distance);
@@ -364,25 +364,25 @@ class Game extends React.Component {
         const scroll = document.querySelector(".game");
   
         // console.log("test1");
-        if(!this.state.isScrolling) {
+        if(!this.state.isScrolling) { //if it is not already scrolling
 
             const levelScrolling = setInterval(() => {
-                if(scroll.scrollTop === 0) {
+                /* if(scroll.scrollTop === 0) { THIS IS FOR TESTING SCROLLING, FOR STOPPING WHEN REACHING THE END
                     // console.log("test2");
                     clearInterval(this.state.scrollingFunc);
                     this.setState({movementToggle: false});
                     return
-                }
-                scroll.scrollTop -=this.state.scrollingSpeed
-                if (this.state.playerJumping) {
-                    
-                } else if (this.state.playerFalling) {
+                } */
+                scroll.scrollTop -=this.state.scrollingSpeed // scroll the game by the right amount
+                if (this.state.playerJumping) {//if the player is jumping up 
+                    //dont do anything
+                } else if (this.state.playerFalling) {// if the player is falling
                     const playerCurPos = this.getPlayerCurPos();
-                    const distance = (this.state.playerTargetY + this.state.scrollingAdjustment) - playerCurPos.y;
+                    const distance = (this.state.playerTargetY + this.state.scrollingAdjustment) - playerCurPos.y;//the new distance of the moving platform
                     if (distance < 20) {//changed from 10 to 20; works better now
                         // console.log("faster" + distance);
-                        this.setState({playerTargetY: this.state.playerTargetY + this.state.scrollingAdjustment, speed: 0.1, playerTargetX: playerCurPos.x })
-                        return
+                        this.setState({playerTargetY: this.state.playerTargetY + this.state.scrollingAdjustment, speed: 0.1, playerTargetX: playerCurPos.x })//NOTE this might be the problem with bug number 6; which happens if i put this.land on holding the key for movement, it stop the player lateral movement and finding a landing; it is setting the targetx to the current position but is not setting back the target for movement after landing
+                        return;
                     }
                     this.setState({playerTargetY: this.state.playerTargetY + this.state.scrollingAdjustment})
                 } else {
@@ -491,7 +491,7 @@ class Game extends React.Component {
                 this.stopMovement(this.getPlayerCurPos());
             }
             if(this.state.playerFalling === true ){
-                this.land(this.checkAllPlatforms());//NOTE i believe adding this.land here and on the left will be the fix to bug 5
+                this.land(this.checkAllPlatforms());
             }
         }
     }
