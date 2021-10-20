@@ -21,6 +21,7 @@ class Game extends React.Component {
         playerLanded: true,
         playerJumping: false,
         playerFalling: false,
+        playerIsLanding: false,
 
         speed:0,
         jumpGauge: 5,
@@ -31,7 +32,7 @@ class Game extends React.Component {
         isScrolling: false,
         scrollingFunc: 0,
         scrollingSpeed: 5,
-        scrollingAdjustment: 5,
+        scrollingAdjustment: 5,//FIXME bug on phone the velocity is not enough for when scrolling so player never reachs platform; 5.3 works on phone for some reason
 
         points:0,
 
@@ -43,7 +44,10 @@ class Game extends React.Component {
 
     /* FUNCTIONAL METHODS */
 
-    mobileCheck = () => { //regex from detectmobilebrowsers.com to check if it is a mobile 
+    /**
+     * regex from detectmobilebrowsers.com to check if it is a mobile 
+     *   */
+    mobileCheck = () => { 
         let check = false;
         (function(a){if(/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows ce|xda|xiino/i.test(a)||/1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test(a.substr(0,4))) check = true;})(navigator.userAgent||navigator.vendor||window.opera);
         return check;
@@ -172,7 +176,6 @@ class Game extends React.Component {
             if(!this.state.gameStatus)this.resetGame()
         }
         
-        
         if (this.state.isScrolling) {
             const playerCurPos = this.getPlayerCurPos();
             if (playerCurPos.y + playerCurPos.height >= window.innerHeight - 25) {//NOTE maybe in the future instead of this create a event for when the animation ends, i.e when the animation ends at the bottom or when the animaton ends at the side wall (on phone the side wall is the playerTargetX)
@@ -260,32 +263,27 @@ class Game extends React.Component {
     }
 
     //sets event Listener to confirm the landing
-    land = (curPlatform) => {//TODO add a check so that if there is already a event remove before adding the new one
+    land = (curPlatform) => {
         const playerEl = document.getElementById('player');
-                playerEl.addEventListener('transitionend', () => {
-                    console.log("touchedfloorDown");
-                    if (curPlatform) {
-                        console.log("did land1")
-                        this.setState({playerJumping: false, playerFalling: false, playerLanded: true, curPlatform, speed: 1.5});
-                        if (curPlatform.getAttribute("id") > 2 && !this.state.isScrolling) {
-                            console.log(curPlatform); 
-                            this.startScrolling();
-                        }
-                    }else {
-                        console.log("did land2")
-                        if (this.state.curPlatform) {
-                            
-                            // if (this.state.curPlatform.getAttribute("id") > 2 && this.state.isScrolling) {
-                            //     console.log("should stop; landfunc bottomdeath");
-                            //     this.gameOver();
-                            // }
-                            this.setState({playerJumping: false, playerFalling: false, playerLanded: true, speed: 1.5});
-                        }
-                        this.setState({playerJumping: false, playerFalling: false, playerLanded: true, curPlatform: null, speed: 1.5});
-                        console.log(this.state.playerFalling);
+        if (!this.state.playerIsLanding) {
+            playerEl.addEventListener('transitionend', () => {
+                console.log("touchedfloorDown");
+                if (this.state.curPlatform) {
+                    console.log("did land1")
+                    this.setState({playerJumping: false, playerFalling: false, playerLanded: true, playerIsLanding: false, speed: 1.5});
+                    if (this.state.curPlatform.getAttribute("id") > 2 && !this.state.isScrolling) {
+                        console.log(curPlatform); 
+                        this.startScrolling();
                     }
-                   
-                }, {once: true});
+                }else {
+                    console.log("did land2")
+                    this.setState({playerJumping: false, playerFalling: false, playerLanded: true, playerIsLanding: false, speed: 1.5});
+                    console.log(this.state.playerFalling);
+                }
+               
+            }, {once: true});
+            this.setState({playerIsLanding: true});
+        }
     }
 
     checkLanding = (platformEl) => {
@@ -311,11 +309,12 @@ class Game extends React.Component {
                 const landPos = (platformPos.top - (playerCurPos.height));//set the landing at the platform taking + the player height//read body
                 
                 const distance = landPos - playerCurPos.y;
+                //NOTE this is where I am try the new fake physics experiment
                 if (distance < 100) {// if the distance between the player and where he is landing is small increase the veloctiy of landing
                     // console.log("faster" + distance);
                     // this.setState({playerTargetY: landPos, speed: (distance < 30 ? 0.5 : 0.75 ), curPlatform: platformEl, playerFalling: true, playerJumping: false});
                     // this.setState({playerTargetX: playerCurPos.x, playerTargetY: landPos, speed: ((distance/100)+0.1), playerFalling: true, playerJumping: false});
-                    this.setState({playerTargetX: playerCurPos.x, playerTargetY: landPos, speed: (0.2), playerFalling: true, playerJumping: false});//FIXME bug on phone the velocity is not enough for when scrolling so player never reachs platform
+                    this.setState({playerTargetX: playerCurPos.x, playerTargetY: landPos, curPlatform: platformEl, speed: (0.2), playerFalling: true, playerJumping: false});//FIXME bug where if player find landing while still moving it cause a frozen movement between turning velocity 0.2 here and back to 1.5 on lateral movement; maybe create a if(falling true && speed 0.2) dont do anything
                     return platformEl
                 }//if not just land normally
                 this.setState({playerTargetY: landPos, curPlatform: platformEl, speed: 1.0, playerFalling: true, playerJumping: false})
@@ -342,16 +341,16 @@ class Game extends React.Component {
             const playerCurPos = this.getPlayerCurPos();
             const towerBottom = window.innerHeight - playerCurPos.height;
             const distance = towerBottom - playerCurPos.y;
-            if (distance < 100) {// if the distance between the player and where he is landing is small increase the veloctiy of landing
+            if (distance < 50) {// if the distance between the player and floor is small increase the veloctiy of landing
                 console.log("faster" + distance);
                 // this.setState({playerTargetY: towerBottom, speed: ((distance/100)+0.1), playerFalling: true, playerJumping: false});
-                this.setState({playerTargetY: towerBottom, speed: (0.1), playerFalling: true, playerJumping: false});
+                this.setState({playerTargetY: towerBottom, curPlatform: null, speed: (0.1), playerFalling: true, playerJumping: false});
                 // this.setState({playerTargetY: towerBottom, speed: (distance < 30 ? 0.5 : 0.75 ), curPlatform: null, playerFalling: true, playerJumping: false});
                 // console.log(this.state); 
                 return false 
             } else {//if not just land normally
                 // console.log("slower" + distance);
-                this.setState({playerTargetY: towerBottom, speed: 1.5, playerFalling: true, playerJumping: false});
+                this.setState({playerTargetY: towerBottom, curPlatform: null, speed: 1.5, playerFalling: true, playerJumping: false});
                 return false
             } 
         }
@@ -360,10 +359,7 @@ class Game extends React.Component {
     }
 
     startScrolling = () => {
-        // this.setState({isScrolling: true})
         const scroll = document.querySelector(".game");
-  
-        // console.log("test1");
         if(!this.state.isScrolling) { //if it is not already scrolling
 
             const levelScrolling = setInterval(() => {
@@ -426,6 +422,7 @@ class Game extends React.Component {
             playerLanded: true,
             playerJumping: false,
             playerFalling: false,
+            playerIsLanding: false,
 
             speed:0,
             jumpGauge: 5,
@@ -507,6 +504,9 @@ class Game extends React.Component {
                 // console.log("touch wall die")// start some event here to say gameover
                 this.stopMovement({x: leftBorder, y: this.state.playerTargetY}, 0);//stop them there and raise the flag on the leftborder  
             } else {  
+                if(this.state.playerFalling === true ){
+                    this.land(this.checkAllPlatforms());
+                }
                 this.lateralMove(0);// start to move left
             }      
         }else {
@@ -520,16 +520,17 @@ class Game extends React.Component {
                 this.stopMovement(this.getPlayerCurPos());
             }
             if(this.state.playerFalling === true ){
+                if(this.state.playerFalling === true ){
+                    this.land(this.checkAllPlatforms());
+                }
                 this.land(this.checkAllPlatforms());
             }
         }
-
     }
 
     /* EVENT LISTENERS */
 
     handleMobileJump = () => {
-
         document.querySelector(".game").addEventListener('touchstart', (e) =>{
             if (this.state.gauge === null && e.target.nodeName !== "I") {//if gauge havent already started aka if the player isnt already holding the key down
                 this.controllerJump(true);
@@ -549,7 +550,6 @@ class Game extends React.Component {
     }
 
     handleKeyboardMovement = () => {
-
         document.addEventListener('keydown', (e) => {
             // console.log(e.code);
             if(document.activeElement.nodeName !== "INPUT"){//if an input is not on focus
