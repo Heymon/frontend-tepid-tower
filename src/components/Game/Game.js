@@ -398,7 +398,10 @@ class Game extends React.Component {
         clearInterval(this.state.scrollingFunc);
         playerEl.style.display="none";
         console.log("gameOver");
-        this.setState({gameStatus: false, points: (this.state.curPlatform ? (this.state.curPlatform.getAttribute("id")*1000) : 0)})
+        this.setState({gameStatus: false, points: (this.state.curPlatform ? (this.state.curPlatform.getAttribute("id")*1000) : 0)});
+        //FIXME bug where if before dying the player matches land with bottom it sets curPlatform to null giving a score of zero; 
+        //NOTE Possible fix: create a state variable that keeps track of the highest landed platform by checking when they land
+        //NOTE Posible fix2: create a check so that if game is scrolling when matching to bottom dont set cur platform to null 
 
     }
 
