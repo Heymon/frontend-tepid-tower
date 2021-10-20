@@ -182,10 +182,7 @@ class Game extends React.Component {
                 console.log("should stop; didupdate bottomdeath");
                 return this.gameOver()
             }
-
         }
-
-        // console.log("update");
 
         if(this.state.speed <= 0.2) {//if the speed was increase for fixing position//NOTE this might be the reason why the speed is not picking up on mobile so if instead we create a listener for when the faster animation is over to sow down again that might work
             console.log("slowing");
