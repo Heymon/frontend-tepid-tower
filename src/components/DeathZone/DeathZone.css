@@ -1,0 +1,22 @@
+.deathzone {
+    z-index: 2;
+    background-color: transparent;
+    position: absolute;
+    width: 320px;
+    height: 50px;
+    /* margin: 808px 0 0 0; */
+
+}
+
+.deathzone>div {
+    overflow: hidden;
+    width: 54px;
+    height: 50px;
+}
+
+.deathzone img {
+    width: 800%;
+    margin: -241px 0 0 -246px;
+    /* width: 653%;
+    margin: -184px 0 0 -197px; */
+}

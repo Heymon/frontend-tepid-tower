@@ -1,0 +1,40 @@
+
+.leaderboard--modal {
+    flex-flow: column;
+    align-items: center;
+}
+
+.leaderboard--modal>div {
+    width: 79%;
+    height: 68%;
+    overflow-y: hidden;
+    overflow-x: auto;
+}
+
+.leaderboard--modal>div>div:nth-child(2) {
+    overflow-y: auto;
+    overflow-x: hidden;
+    height: min(273px, 81%);
+    /* still gotta fix the width on phone */
+    /* width: fit-content; */
+}
+
+.leaderboard--modal>div>div {
+    /* width: 100%; */
+    width: 395px;
+    /* height: 75%; */
+}
+
+.leaderboard--modal table{
+    /* margin: auto;   */
+    max-height: 100%;
+    width: 100%;
+    border-style: inset;
+    table-layout: fixed;
+}
+
+.leaderboard--modal th{
+    text-align: inherit;
+    margin: auto;  
+    max-height: 100%;
+}

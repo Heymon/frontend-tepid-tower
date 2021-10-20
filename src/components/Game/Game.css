@@ -1,0 +1,25 @@
+.game{
+    background-image: url('../../assets/StoneWall_TXR.png');
+    /* height: 100vh; */
+    background-color: aqua;
+    background-size: contain;
+    /* background-attachment: local; */
+    overflow: hidden;/* auto for testing change to hidden  */
+}
+
+
+.hamburguer--menu{
+    display: none;
+    position: absolute;
+    font-size: 50px;
+    margin: 25px 0 0 259px;
+}
+
+
+@media screen and (max-width : 609px){
+    
+    .hamburguer--menu{
+        display: inline;
+    }
+
+}

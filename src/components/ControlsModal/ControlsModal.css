@@ -1,0 +1,12 @@
+.controls--modal {
+    flex-flow: column;
+}
+
+.controls--modal>* {
+    margin: auto;
+}
+
+.controls--modal>div {
+    width: 96%;
+    height: 50%;
+}
